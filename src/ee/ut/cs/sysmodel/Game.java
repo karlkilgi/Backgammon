@@ -7,6 +7,8 @@ package ee.ut.cs.sysmodel;
  */
 
 public class Game {
+
+
     private int betSize = 1;
     private Player activePlayer = Player.NONE;
     Point[] points = new Point[24];
@@ -42,5 +44,45 @@ public class Game {
 
     public void sendCheckerToBar() {
 
+    }
+
+    public Player getActivePlayer() {
+        return activePlayer;
+    }
+
+    public void setActivePlayer(Player activePlayer) {
+        this.activePlayer = activePlayer;
+    }
+
+    public int getBetSize() {
+        return betSize;
+    }
+
+    public void setBetSize(int betSize) {
+        this.betSize = betSize;
+    }
+
+    public Point[] getPoints() {
+        return points;
+    }
+
+    public void setPoints(Point[] points) {
+        this.points = points;
+    }
+
+    public Bar getPlayer1Bar() {
+        return player1Bar;
+    }
+
+    public void setPlayer1Bar(Bar player1Bar) {
+        this.player1Bar = player1Bar;
+    }
+
+    public Bar getPlayer2Bar() {
+        return player2Bar;
+    }
+
+    public void setPlayer2Bar(Bar player2Bar) {
+        this.player2Bar = player2Bar;
     }
 }
