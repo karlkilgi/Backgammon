@@ -25,12 +25,35 @@ public class Game {
             point = new Point(positionNumber);
             positionNumber++;
         }
-
         initializeCheckers();
     }
 
     private void initializeCheckers() {
+        //For Player1
+        points[23].setNumberOfCheckers(2);
+        points[23].setPlayer(Player.PLAYER1);
 
+        points[12].setNumberOfCheckers(5);
+        points[12].setPlayer(Player.PLAYER1);
+
+        points[7].setNumberOfCheckers(3);
+        points[7].setPlayer(Player.PLAYER1);
+
+        points[5].setNumberOfCheckers(5);
+        points[5].setPlayer(Player.PLAYER1);
+
+        //For Player2
+        points[0].setNumberOfCheckers(2);
+        points[0].setPlayer(Player.PLAYER2);
+
+        points[7].setNumberOfCheckers(5);
+        points[7].setPlayer(Player.PLAYER2);
+
+        points[16].setNumberOfCheckers(3);
+        points[16].setPlayer(Player.PLAYER2);
+
+        points[5].setNumberOfCheckers(18);
+        points[5].setPlayer(Player.PLAYER2);
     }
 
     public static void main(String[] args) {
