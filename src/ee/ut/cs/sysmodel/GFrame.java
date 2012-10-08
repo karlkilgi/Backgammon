@@ -46,7 +46,7 @@ public class GFrame {
 	}
 	
 	private void createGPoint(int i, JFrame frame, Point[] points) {
-		GPoint gPoint = new GPoint(this, points[i]);
+		GPoint gPoint = new GPoint(this, points[i + 1]);
 		JPanel panel = new JPanel();
 		Color color = i % 2 == 0 ? Color.LIGHT_GRAY : Color.GRAY;
 		panel.setBackground(color);
