@@ -85,10 +85,20 @@ public class Game {
     public int[] onDiceThrow() {
         int[] throwResult = dice.throwDice();
         setAvailableMoves(throwResult);
-        if(availableMoves.isEmpty()){
-
+        if (availableMoves.isEmpty()) {
+            changeActivePlayer();
         }
         return throwResult;
+    }
+
+    private void changeActivePlayer() {
+        //TODO set text about no moves left, changing player, throwing new dice
+        if (activePlayer == Player.PLAYER1) {
+            activePlayer = Player.PLAYER2;
+        } else {
+            activePlayer = Player.PLAYER1;
+        }
+        dice.throwDice();
     }
 
     public void setAvailableMoves(int[] throwResult) {
