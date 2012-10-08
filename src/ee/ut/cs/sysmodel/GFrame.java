@@ -23,6 +23,8 @@ public class GFrame {
 		GridLayout layout = new GridLayout();
 		layout.setColumns(12);
 		layout.setRows(2);
+		layout.setHgap(10);
+		layout.setVgap(20);
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
@@ -48,8 +50,6 @@ public class GFrame {
 	private void createGPoint(int i, JFrame frame, Point[] points) {
 		GPoint gPoint = new GPoint(this, points[i + 1]);
 		JPanel panel = new JPanel();
-		Color color = i % 2 == 0 ? Color.LIGHT_GRAY : Color.GRAY;
-		panel.setBackground(color);
 		gPoint.setPanel(panel);
 		frame.add(panel);
 		gPoints.add(gPoint);
@@ -60,7 +60,5 @@ public class GFrame {
 			gPoint.refresh();
 		}
 	}
-	
-	
 	
 }
