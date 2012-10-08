@@ -22,6 +22,7 @@ public class Game {
 
     Game() {
         initializeGame();
+        GFrame gFrame = new GFrame(this);
     }
 
     private void initializeGame() {
