@@ -1,6 +1,7 @@
 package ee.ut.cs.sysmodel;
 
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -11,19 +12,18 @@ import java.util.Random;
 
 public class Dice {
 
-    public int[] throwDice() {
-        int[] diceResult;
+    public List<Integer> throwDice() {
+        List<Integer> diceResult = new LinkedList<Integer>();
         Random dice = new Random();
         int firstDiceResult = dice.nextInt(6) + 1;
         int secondDiceResult = dice.nextInt(6) + 1;
 
         if (firstDiceResult != secondDiceResult) {
-            diceResult = new int[2];
-            diceResult[0] = firstDiceResult;
-            diceResult[1] = secondDiceResult;
+            diceResult.add(firstDiceResult);
+            diceResult.add(secondDiceResult);
         } else {
-            diceResult = new int[4];
-            Arrays.fill(diceResult, firstDiceResult);
+            for (int i = 0; i <= 3; i++)
+                diceResult.add(firstDiceResult);
         }
         return diceResult;
     }

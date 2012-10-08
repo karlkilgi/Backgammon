@@ -83,36 +83,35 @@ public class Game {
         }
     }
 
-    public int[] onDiceThrow() {
-        int[] throwResult = dice.throwDice();
-        setAvailableMoves(throwResult);
+    public List<Integer> onDiceThrow() {
+        throwResults = dice.throwDice();
+        setAvailableMoves(throwResults);
         if (availableMoves.isEmpty()) {
             changeActivePlayer();
         }
-        return throwResult;
+        return throwResults;
     }
 
     private void changeActivePlayer() {
-        //TODO set text about no moves left, changing player, throwing new dice
+        //TODO set text about no moves left, changing player
         if (activePlayer == Player.PLAYER1) {
             activePlayer = Player.PLAYER2;
         } else {
             activePlayer = Player.PLAYER1;
         }
-        dice.throwDice();
     }
 
-    public void setAvailableMoves(int[] throwResult) {
+    public void setAvailableMoves(List<Integer> throwResult) {
         availableMoves.clear();
         List<Point> populatedPoints = getActivePlayerPopulatedPoints();
-        if (throwResult.length == 2) {
+        if (throwResult.size() == 2) {
             for (Point populatedPoint : populatedPoints) {
                 int fromPoint = populatedPoint.getPosition();
-                int toPoint = fromPoint + throwResult[0];
+                int toPoint = fromPoint + throwResult.get(0);
                 if (points[toPoint].canAdd(activePlayer)) {
                     availableMoves.add(new Move(fromPoint, toPoint));
                 }
-                int toPoint2 = fromPoint + throwResult[0];
+                int toPoint2 = fromPoint + throwResult.get(1);
                 if (points[toPoint2].canAdd(activePlayer)) {
                     availableMoves.add(new Move(fromPoint, toPoint2));
                 }
@@ -121,7 +120,7 @@ public class Game {
         } else {
             for (Point populatedPoint : populatedPoints) {
                 int fromPoint = populatedPoint.getPosition();
-                int toPoint = fromPoint + throwResult[0];
+                int toPoint = fromPoint + throwResult.get(0);
                 if (points[toPoint].canAdd(activePlayer)) {
                     availableMoves.add(new Move(fromPoint, toPoint));
                 }
