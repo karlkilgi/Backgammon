@@ -20,10 +20,8 @@ public class Game {
 
     private void initializeGame() {
 
-        int positionNumber = 1;
-        for (Point point : points) {
-            point = new Point(positionNumber);
-            positionNumber++;
+        for (int i = 0; i <= 23; i++) {
+            points[i] = new Point(i + 1);
         }
         initializeCheckers();
     }
