@@ -7,7 +7,16 @@ package ee.ut.cs.sysmodel;
  */
 
 public class Point {
+    public int getNumberOfCheckers() {
+        return numberOfCheckers;
+    }
+
     private int numberOfCheckers;
+
+    public Player getPlayer() {
+        return player;
+    }
+
     private Player player;
     private int position;
 

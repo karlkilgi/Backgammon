@@ -7,11 +7,30 @@ package ee.ut.cs.sysmodel;
  */
 
 public class Move {
-    int fromPoint;
-    int toPoint;
+    private int fromPoint;
+
+    public int getFromPoint() {
+        return fromPoint;
+    }
+
+    public int getToPoint() {
+        return toPoint;
+    }
+
+    private int toPoint;
 
     public Move(int fromPoint, int toPoint) {
         this.fromPoint = fromPoint;
         this.toPoint = toPoint;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Move) {
+            Move move = (Move) object;
+            return (this.fromPoint == move.fromPoint) && (this.toPoint == move.toPoint);
+        } else {
+            return false;
+        }
     }
 }

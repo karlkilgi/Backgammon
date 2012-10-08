@@ -18,4 +18,12 @@ public class Bar {
     public boolean isEmpty() {
         return numberOfCheckers == 0;
     }
+
+    public void addChecker() {
+        numberOfCheckers++;
+    }
+
+    public void removeChecker() {
+        numberOfCheckers--;
+    }
 }
