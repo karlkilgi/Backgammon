@@ -54,15 +54,10 @@ public class GPoint {
 		});
 		GridLayout layout = new GridLayout();
 		layout.setColumns(1);
-		layout.setRows(16);
+		layout.setRows(15);
 		panel.setLayout(layout);
-		
-		for (int i = 0; i < 16; i++) {
-			panel.add(createEmptyChecker());
-		}
 
 		panel.setVisible(true);
-		refresh();
 	}
 	
 	private JPanel createEmptyChecker() {
