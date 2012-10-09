@@ -19,7 +19,7 @@ public class Game {
     Dice dice = new Dice();
     private List<Integer> diceMovesLeft;
     GFrame frame;
-    
+
     Game() {
         initializeGame();
         frame = new GFrame(this);
@@ -31,6 +31,7 @@ public class Game {
             points[i] = new Point(i);
         }
         initializeCheckers();
+        onDiceThrow();
     }
 
     private void initializeCheckers() {
@@ -139,6 +140,9 @@ public class Game {
         availableMoves.clear();
         int toPoint;
         boolean homeGame = true;
+        if (throwResult.isEmpty()) {
+            return;
+        }
         if (!activePlayer.getBar().isEmpty()) {
             setAvailableMovesOutOfBar(throwResult);
         } else {
