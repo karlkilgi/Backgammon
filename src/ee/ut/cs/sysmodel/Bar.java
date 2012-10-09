@@ -7,8 +7,7 @@ package ee.ut.cs.sysmodel;
  */
 
 public class Bar {
-    int numberOfCheckers;
-    Player player;
+    private int numberOfCheckers;
 
     Bar() {
         this.numberOfCheckers = 0;
@@ -24,5 +23,9 @@ public class Bar {
 
     public void removeChecker() {
         numberOfCheckers--;
+    }
+
+    public int getNumberOfCheckers() {
+        return numberOfCheckers;
     }
 }

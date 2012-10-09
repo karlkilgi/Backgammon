@@ -13,12 +13,12 @@ public class Game {
 
     private int betSize = 1;
     private Player activePlayer = Player.NONE;
-    Point[] points = new Point[26];
-    List<Move> availableMoves = new LinkedList<Move>();
-    List<Integer> throwResults = new LinkedList<Integer>();
-    Dice dice = new Dice();
+    private Point[] points = new Point[26];
+    private List<Move> availableMoves = new LinkedList<Move>();
+    private List<Integer> throwResults = new LinkedList<Integer>();
+    private Dice dice = new Dice();
     private List<Integer> diceMovesLeft;
-    GFrame frame;
+    private GFrame frame;
 
     Game() {
         initializeGame();
