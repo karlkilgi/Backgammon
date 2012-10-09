@@ -45,6 +45,9 @@ public class GPoint {
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (point.getNumberOfCheckers() < 1) {
+					return;
+				}
 				frame.onPointClick(point);
 				panel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,2));
 			}

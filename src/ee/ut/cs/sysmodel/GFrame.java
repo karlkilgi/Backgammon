@@ -2,7 +2,6 @@ package ee.ut.cs.sysmodel;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
