@@ -1,12 +1,9 @@
 package ee.ut.cs.sysmodel;
 
-import java.awt.Color;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 
 public class GPoint {
 

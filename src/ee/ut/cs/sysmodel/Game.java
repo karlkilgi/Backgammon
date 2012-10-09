@@ -31,7 +31,6 @@ public class Game {
             points[i] = new Point(i);
         }
         initializeCheckers();
-        onDiceThrow();
     }
 
     private void initializeCheckers() {
@@ -79,6 +78,7 @@ public class Game {
     }
 
     public void onMove(int fromPoint, int toPoint) {
+        boolean movesLeft;
         Move playerMove = new Move(fromPoint, toPoint);
         for (Move move : availableMoves) {
             if (move.equals(playerMove)) {
@@ -91,7 +91,13 @@ public class Game {
                 if (checkerToBar) {
                     sendCheckerToBar();
                 }
-                setAvailableMoves(getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint()));
+                getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
+                movesLeft = diceMovesLeft.isEmpty();
+                if (!movesLeft) {
+                    setAvailableMoves(diceMovesLeft);
+                } else {
+                    changeActivePlayer();
+                }
                 if (availableMoves.isEmpty()) {
                     changeActivePlayer();
                 }
@@ -246,7 +252,7 @@ public class Game {
     }
 
     public List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
-        int usedMove;
+        Integer usedMove;
         if (activePlayer == Player.PLAYER1) {
             usedMove = fromPoint - toPoint;
         } else {
