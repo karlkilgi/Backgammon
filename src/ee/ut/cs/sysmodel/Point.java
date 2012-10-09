@@ -38,9 +38,15 @@ public class Point {
         return this.player == player || numberOfCheckers <= 1;
     }
 
-    public void addChecker(Player player) {
+    public boolean addChecker(Player player) {
+        boolean sendOpponentCheckerToBar = this.player != player;
+        if (sendOpponentCheckerToBar) {
+            numberOfCheckers = 1;
+        } else {
+            numberOfCheckers++;
+        }
         this.player = player;
-        numberOfCheckers++;
+        return sendOpponentCheckerToBar;
     }
 
     public void removeChecker() {

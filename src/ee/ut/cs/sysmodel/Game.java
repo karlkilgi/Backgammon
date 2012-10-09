@@ -14,8 +14,6 @@ public class Game {
     private int betSize = 1;
     private Player activePlayer = Player.NONE;
     Point[] points = new Point[26];
-    Bar player1Bar = new Bar(0, Player.PLAYER1);
-    Bar player2Bar = new Bar(0, Player.PLAYER2);
     List<Move> availableMoves = new LinkedList<Move>();
     List<Integer> throwResults = new LinkedList<Integer>();
     Dice dice = new Dice();
@@ -71,15 +69,26 @@ public class Game {
     }
 
     public void sendCheckerToBar() {
-
+        if (activePlayer == Player.PLAYER1) {
+            Player.PLAYER2.getBar().addChecker();
+        } else {
+            Player.PLAYER1.getBar().addChecker();
+        }
     }
 
     public void onMove(int fromPoint, int toPoint) {
         Move playerMove = new Move(fromPoint, toPoint);
         for (Move move : availableMoves) {
             if (move.equals(playerMove)) {
-                points[playerMove.getFromPoint()].removeChecker();
-                points[playerMove.getToPoint()].addChecker(activePlayer);
+                if (activePlayer.getBar().isEmpty()) {
+                    points[playerMove.getFromPoint()].removeChecker();
+                } else {
+                    activePlayer.getBar().removeChecker();
+                }
+                boolean checkerToBar = points[playerMove.getToPoint()].addChecker(activePlayer);
+                if (checkerToBar) {
+                    sendCheckerToBar();
+                }
                 setAvailableMoves(getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint()));
                 if (availableMoves.isEmpty()) {
                     changeActivePlayer();
@@ -90,6 +99,21 @@ public class Game {
 
     public List<Integer> onDiceThrow() {
         throwResults = dice.throwDice();
+        if (activePlayer == Player.NONE) {
+            boolean startingGame = true;
+            while (startingGame) {
+                if (throwResults.get(0) > throwResults.get(1)) {
+                    activePlayer = Player.PLAYER1;
+                    startingGame = false;
+                }
+                if (throwResults.get(0) < throwResults.get(1)) {
+                    activePlayer = Player.PLAYER2;
+                    startingGame = false;
+                } else {
+                    throwResults = dice.throwDice();
+                }
+            }
+        }
         diceMovesLeft = throwResults;
         setAvailableMoves(throwResults);
         if (availableMoves.isEmpty()) {
@@ -103,9 +127,9 @@ public class Game {
     private void changeActivePlayer() {
         //TODO set text about no moves left, changing player
         if (activePlayer == Player.PLAYER1) {
-            activePlayer = Player.PLAYER2;
+            setActivePlayer(Player.PLAYER2);
         } else {
-            activePlayer = Player.PLAYER1;
+            setActivePlayer(Player.PLAYER1);
         }
     }
 
@@ -113,50 +137,73 @@ public class Game {
         availableMoves.clear();
         int toPoint;
         boolean homeGame = true;
-        List<Point> populatedPoints = getActivePlayerPopulatedPoints();
-        for (Point populatedPoint : populatedPoints) {
-            if (activePlayer == Player.PLAYER1) {
-                if (populatedPoint.getPosition() > 6) {
-                    homeGame = false;
+        if (!activePlayer.getBar().isEmpty()) {
+            setAvailableMovesOutOfBar(throwResult);
+        } else {
+            List<Point> populatedPoints = getActivePlayerPopulatedPoints();
+            for (Point populatedPoint : populatedPoints) {
+                if (activePlayer == Player.PLAYER1) {
+                    if (populatedPoint.getPosition() > 6) {
+                        homeGame = false;
+                    }
+                }
+                if (activePlayer == Player.PLAYER2) {
+                    if (populatedPoint.getPosition() < 19) {
+                        homeGame = false;
+                    }
                 }
             }
-            if (activePlayer == Player.PLAYER2) {
-                if (populatedPoint.getPosition() < 19) {
-                    homeGame = false;
+            for (Point populatedPoint : populatedPoints) {
+                for (int i = 0; i <= 1; i++) {
+                    int fromPoint = populatedPoint.getPosition();
+                    //Detecting if player can put the checker to home
+                    if (activePlayer == Player.PLAYER1) {
+                        toPoint = fromPoint - throwResult.get(i);
+                        if (toPoint < activePlayer.getHomePoint()) {
+                            toPoint = activePlayer.getHomePoint();
+                        }
+                    } else {
+                        toPoint = fromPoint + throwResult.get(i);
+                        if (toPoint > activePlayer.getHomePoint()) {
+                            toPoint = activePlayer.getHomePoint();
+                        }
+                    }
+                    if (points[toPoint].canAdd(activePlayer)) {
+                        /*
+                        TODO check that player cant put checker from position
+                        1 to 0 if throw was 6 and in position 6 checker exists.
+                        */
+                        if (homeGame && toPoint == activePlayer.getHomePoint()) {
+                            availableMoves.add(new Move(fromPoint, toPoint));
+                        }
+                        if (toPoint != activePlayer.getHomePoint()) {
+                            availableMoves.add(new Move(fromPoint, toPoint));
+                        }
+                    }
+                    //No need to populate list with same moves
+                    if (throwResult.size() > 2) {
+                        break;
+                    }
                 }
             }
         }
+    }
 
-        for (Point populatedPoint : populatedPoints) {
-            for (int i = 0; i <= 1; i++) {
-                int fromPoint = populatedPoint.getPosition();
-                //Detecting if player can put the checker to home
-                if (activePlayer == Player.PLAYER1) {
-                    toPoint = fromPoint - throwResult.get(i);
-                    if (toPoint < activePlayer.getHomePoint()) {
-                        toPoint = activePlayer.getHomePoint();
-                    }
-                } else {
-                    toPoint = fromPoint + throwResult.get(i);
-                    if (toPoint > activePlayer.getHomePoint()) {
-                        toPoint = activePlayer.getHomePoint();
-                    }
-                }
+    private void setAvailableMovesOutOfBar(List<Integer> throwResult) {
+        int fromPoint;
+        int toPoint;
+        for (int i = 0; i <= 1; i++) {
+            if (activePlayer == Player.PLAYER1) {
+                fromPoint = 25;
+                toPoint = fromPoint - throwResult.get(i);
                 if (points[toPoint].canAdd(activePlayer)) {
-                    /*
-                    TODO check that player cant put checker from position
-                    1 to 0 if throw was 6 and in position 6 checker exists.
-                    */
-                    if (homeGame && toPoint == activePlayer.getHomePoint()) {
-                        availableMoves.add(new Move(fromPoint, toPoint));
-                    }
-                    if (toPoint != activePlayer.getHomePoint()) {
-                        availableMoves.add(new Move(fromPoint, toPoint));
-                    }
+                    availableMoves.add(new Move(fromPoint, toPoint));
                 }
-                //No need to populate list with same moves
-                if (throwResult.size() > 2) {
-                    break;
+            } else {
+                fromPoint = 0;
+                toPoint = fromPoint + throwResult.get(i);
+                if (points[toPoint].canAdd(activePlayer)) {
+                    availableMoves.add(new Move(fromPoint, toPoint));
                 }
             }
         }
@@ -164,7 +211,7 @@ public class Game {
 
     public List<Point> getActivePlayerPopulatedPoints() {
         List<Point> populatedPoints = new LinkedList<Point>();
-        for (int i = 1; i <= 24; i++) {
+        for (int i = 0; i <= 25; i++) {
             if (points[i].getPlayer() == activePlayer) {
                 populatedPoints.add(points[i]);
             }
@@ -184,24 +231,12 @@ public class Game {
         return betSize;
     }
 
-    private void setBetSize(int betSize) {
-        this.betSize = betSize;
-    }
-
     public Point[] getPoints() {
         return points;
     }
 
     private void setPoints(Point[] points) {
         this.points = points;
-    }
-
-    public Bar getPlayer1Bar() {
-        return player1Bar;
-    }
-
-    public Bar getPlayer2Bar() {
-        return player2Bar;
     }
 
     public List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {

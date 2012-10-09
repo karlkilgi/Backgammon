@@ -10,9 +10,8 @@ public class Bar {
     int numberOfCheckers;
     Player player;
 
-    Bar(int numberOfCheckers, Player player) {
-        this.numberOfCheckers = numberOfCheckers;
-        this.player = player;
+    Bar() {
+        this.numberOfCheckers = 0;
     }
 
     public boolean isEmpty() {
