@@ -1,9 +1,9 @@
 package ee.ut.cs.sysmodel;
 
+import ee.ut.cs.sysmodel.gui.GFrame;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import ee.ut.cs.sysmodel.gui.GFrame;
 
 /**
  * User: Karl Kilgi
@@ -106,9 +106,9 @@ public class Game {
 //                }
 //            }
 //        }
-        
+
         if (availableMoves.contains(playerMove)) {
-        	if (activePlayer.getBar().isEmpty()) {
+            if (activePlayer.getBar().isEmpty()) {
                 points[playerMove.getFromPoint()].removeChecker();
             } else {
                 activePlayer.getBar().removeChecker();
@@ -128,7 +128,7 @@ public class Game {
                 changeActivePlayer();
             }
         } else {
-        	frame.showIllegalMovePopUp();
+            frame.showIllegalMovePopUp();
         }
         frame.refresh();
     }
@@ -136,7 +136,7 @@ public class Game {
     public List<Integer> onDiceThrow() {
         throwResults = dice.throwDice();
         if (activePlayer == Player.NONE) {
-        	frame.showBeginningPopup();
+            frame.showBeginningPopup();
             boolean startingGame = true;
             while (startingGame) {
                 if (throwResults.get(0) > throwResults.get(1)) {
@@ -157,7 +157,7 @@ public class Game {
             changeActivePlayer();
             return null;
         } else {
-        	frame.showDiceResults(throwResults);
+            frame.showDiceResults(throwResults);
             return throwResults;
         }
     }
@@ -214,7 +214,7 @@ public class Game {
                         }
                     }
                     //No need to populate list with same moves
-                    if (throwResult.size() > 2) {
+                    if (throwResult.size() > 2 || throwResult.size() == 1) {
                         break;
                     }
                 }
@@ -255,12 +255,12 @@ public class Game {
     public Player getActivePlayer() {
         return activePlayer;
     }
-    
+
     public Player getInActivePlayer() {
-    	if (activePlayer == Player.NONE) {
-    		return activePlayer; // LOL
-    	}
-        return activePlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; 
+        if (activePlayer == Player.NONE) {
+            return activePlayer; // LOL
+        }
+        return activePlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
     }
 
     public void setActivePlayer(Player activePlayer) {
