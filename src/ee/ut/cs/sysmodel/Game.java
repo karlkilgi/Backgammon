@@ -13,13 +13,13 @@ public class Game {
 
     private int betSize = 1;
     private Player activePlayer = Player.NONE;
-    Point[] points = new Point[26];
-    List<Move> availableMoves = new LinkedList<Move>();
-    List<Integer> throwResults = new LinkedList<Integer>();
-    Dice dice = new Dice();
+    private Point[] points = new Point[26];
+    private List<Move> availableMoves = new LinkedList<Move>();
+    private List<Integer> throwResults = new LinkedList<Integer>();
+    private Dice dice = new Dice();
     private List<Integer> diceMovesLeft;
-    GFrame frame;
-    
+    private GFrame frame;
+
     Game() {
         initializeGame();
         frame = new GFrame(this);
@@ -78,6 +78,7 @@ public class Game {
     }
 
     public void onMove(int fromPoint, int toPoint) {
+        boolean movesLeft;
         Move playerMove = new Move(fromPoint, toPoint);
         for (Move move : availableMoves) {
             if (move.equals(playerMove)) {
@@ -90,7 +91,13 @@ public class Game {
                 if (checkerToBar) {
                     sendCheckerToBar();
                 }
-                setAvailableMoves(getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint()));
+                getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
+                movesLeft = diceMovesLeft.isEmpty();
+                if (!movesLeft) {
+                    setAvailableMoves(diceMovesLeft);
+                } else {
+                    changeActivePlayer();
+                }
                 if (availableMoves.isEmpty()) {
                     changeActivePlayer();
                 }
@@ -139,6 +146,9 @@ public class Game {
         availableMoves.clear();
         int toPoint;
         boolean homeGame = true;
+        if (throwResult.isEmpty()) {
+            return;
+        }
         if (!activePlayer.getBar().isEmpty()) {
             setAvailableMovesOutOfBar(throwResult);
         } else {
@@ -242,7 +252,7 @@ public class Game {
     }
 
     public List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
-        int usedMove;
+        Integer usedMove;
         if (activePlayer == Player.PLAYER1) {
             usedMove = fromPoint - toPoint;
         } else {
