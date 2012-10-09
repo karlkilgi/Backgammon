@@ -8,11 +8,32 @@ import java.awt.Color;
  * Time: 9:34 PM
  */
 public enum Player {
-    PLAYER1(Color.RED, 0, new Bar()), PLAYER2(Color.WHITE, 25, new Bar()), NONE;
+    PLAYER1(Color.RED, 0, new Bar(), "Player 1"),
+    PLAYER2(Color.WHITE, 25, new Bar(), "Player 2"),
+    NONE;
+    
     private final int homePoint;
     private final Color color;
     private Bar bar;
+    private final String name;
 
+    Player() {
+        this.color = null;
+        this.homePoint = -1;
+        this.name = null;
+    }
+
+    Player(Color color, int homePoint, Bar bar, String name) {
+        this.color = color;
+        this.homePoint = homePoint;
+        this.bar = bar;
+        this.name = name;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+    
     public Bar getBar() {
         return bar;
     }
@@ -20,20 +41,9 @@ public enum Player {
     public int getHomePoint() {
         return homePoint;
     }
-
-    Player() {
-        this.color = null;
-        this.homePoint = 0;
-    }
-
-    Player(Color color, int homePoint, Bar bar) {
-        this.color = color;
-        this.homePoint = homePoint;
-        this.bar = bar;
-    }
-
-    public Color getColor() {
-        return color;
+    
+    public String getName() {
+    	return name;
     }
 
 

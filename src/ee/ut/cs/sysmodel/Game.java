@@ -25,6 +25,7 @@ public class Game {
     Game() {
         initializeGame();
         frame = new GFrame(this);
+        onDiceThrow();
     }
 
     private void initializeGame() {
@@ -82,28 +83,52 @@ public class Game {
     public void onMove(int fromPoint, int toPoint) {
         boolean movesLeft;
         Move playerMove = new Move(fromPoint, toPoint);
-        for (Move move : availableMoves) {
-            if (move.equals(playerMove)) {
-                if (activePlayer.getBar().isEmpty()) {
-                    points[playerMove.getFromPoint()].removeChecker();
-                } else {
-                    activePlayer.getBar().removeChecker();
-                }
-                boolean checkerToBar = points[playerMove.getToPoint()].addChecker(activePlayer);
-                if (checkerToBar) {
-                    sendCheckerToBar();
-                }
-                getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
-                movesLeft = diceMovesLeft.isEmpty();
-                if (!movesLeft) {
-                    setAvailableMoves(diceMovesLeft);
-                } else {
-                    changeActivePlayer();
-                }
-                if (availableMoves.isEmpty()) {
-                    changeActivePlayer();
-                }
+//        for (Move move : availableMoves) {
+//            if (move.equals(playerMove)) {
+//                if (activePlayer.getBar().isEmpty()) {
+//                    points[playerMove.getFromPoint()].removeChecker();
+//                } else {
+//                    activePlayer.getBar().removeChecker();
+//                }
+//                boolean checkerToBar = points[playerMove.getToPoint()].addChecker(activePlayer);
+//                if (checkerToBar) {
+//                    sendCheckerToBar();
+//                }
+//                getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
+//                movesLeft = diceMovesLeft.isEmpty();
+//                if (!movesLeft) {
+//                    setAvailableMoves(diceMovesLeft);
+//                } else {
+//                    changeActivePlayer();
+//                }
+//                if (availableMoves.isEmpty()) {
+//                    changeActivePlayer();
+//                }
+//            }
+//        }
+        
+        if (availableMoves.contains(playerMove)) {
+        	if (activePlayer.getBar().isEmpty()) {
+                points[playerMove.getFromPoint()].removeChecker();
+            } else {
+                activePlayer.getBar().removeChecker();
             }
+            boolean checkerToBar = points[playerMove.getToPoint()].addChecker(activePlayer);
+            if (checkerToBar) {
+                sendCheckerToBar();
+            }
+            getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
+            movesLeft = diceMovesLeft.isEmpty();
+            if (!movesLeft) {
+                setAvailableMoves(diceMovesLeft);
+            } else {
+                changeActivePlayer();
+            }
+            if (availableMoves.isEmpty()) {
+                changeActivePlayer();
+            }
+        } else {
+        	frame.showIllegalMovePopUp();
         }
         frame.refresh();
     }
@@ -111,6 +136,7 @@ public class Game {
     public List<Integer> onDiceThrow() {
         throwResults = dice.throwDice();
         if (activePlayer == Player.NONE) {
+        	frame.showBeginningPopup();
             boolean startingGame = true;
             while (startingGame) {
                 if (throwResults.get(0) > throwResults.get(1)) {
@@ -131,6 +157,7 @@ public class Game {
             changeActivePlayer();
             return null;
         } else {
+        	frame.showDiceResults(throwResults);
             return throwResults;
         }
     }
@@ -142,6 +169,7 @@ public class Game {
         } else {
             setActivePlayer(Player.PLAYER1);
         }
+        frame.showChangePlayersPopup();
     }
 
     public void setAvailableMoves(List<Integer> throwResult) {
@@ -226,6 +254,13 @@ public class Game {
 
     public Player getActivePlayer() {
         return activePlayer;
+    }
+    
+    public Player getInActivePlayer() {
+    	if (activePlayer == Player.NONE) {
+    		return activePlayer; // LOL
+    	}
+        return activePlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; 
     }
 
     public void setActivePlayer(Player activePlayer) {
