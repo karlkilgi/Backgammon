@@ -8,6 +8,7 @@ package ee.ut.cs.sysmodel;
 
 public class Move {
     private int fromPoint;
+    private int toPoint;
 
     public int getFromPoint() {
         return fromPoint;
@@ -16,8 +17,6 @@ public class Move {
     public int getToPoint() {
         return toPoint;
     }
-
-    private int toPoint;
 
     public Move(int fromPoint, int toPoint) {
         this.fromPoint = fromPoint;

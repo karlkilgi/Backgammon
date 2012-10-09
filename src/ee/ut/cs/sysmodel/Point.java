@@ -7,6 +7,9 @@ package ee.ut.cs.sysmodel;
  */
 
 public class Point {
+    private Player player;
+    private int position;
+
     public int getNumberOfCheckers() {
         return numberOfCheckers;
     }
@@ -16,9 +19,6 @@ public class Point {
     public Player getPlayer() {
         return player;
     }
-
-    private Player player;
-    private int position;
 
     public void setNumberOfCheckers(int numberOfCheckers) {
         this.numberOfCheckers = numberOfCheckers;

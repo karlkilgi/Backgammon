@@ -9,7 +9,7 @@ import java.awt.Color;
  */
 public enum Player {
     PLAYER1(Color.RED, 0, new Bar()), PLAYER2(Color.WHITE, 25, new Bar()), NONE;
-
+    private final int homePoint;
     private final Color color;
     private Bar bar;
 
@@ -20,8 +20,6 @@ public enum Player {
     public int getHomePoint() {
         return homePoint;
     }
-
-    private final int homePoint;
 
     Player() {
         this.color = null;
