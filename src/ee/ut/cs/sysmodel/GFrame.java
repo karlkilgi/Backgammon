@@ -11,7 +11,9 @@ import javax.swing.JPanel;
 public class GFrame {
 
 	private Game game;
-	private List<GPoint> gPoints = new ArrayList<GPoint>();;
+	private List<GPoint> gPoints = new ArrayList<GPoint>();
+	
+	private Point fromPoint;
 	
 	public GFrame(Game game) {
 		this.game = game;
@@ -55,10 +57,23 @@ public class GFrame {
 		gPoints.add(gPoint);
 	}
 	
-	private void refresh() {
+	public void refresh() {
 		for (GPoint gPoint : gPoints) {
 			gPoint.refresh();
 		}
+	}
+
+	public void onPointClick(Point point) {
+		if (isFromPointSelected() && fromPoint.getPosition() != point.getPosition()) {
+			game.onMove(fromPoint.getPosition(), point.getPosition());
+			fromPoint = null;
+		} else {
+			this.fromPoint = point;
+		}
+	}
+	
+	private boolean isFromPointSelected() {
+		return fromPoint != null;
 	}
 	
 }
