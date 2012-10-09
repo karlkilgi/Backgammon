@@ -20,10 +20,11 @@ public class Game {
     List<Integer> throwResults = new LinkedList<Integer>();
     Dice dice = new Dice();
     private List<Integer> diceMovesLeft;
-
+    GFrame frame;
+    
     Game() {
         initializeGame();
-        GFrame gFrame = new GFrame(this);
+        frame = new GFrame(this);
     }
 
     private void initializeGame() {
@@ -86,6 +87,7 @@ public class Game {
                 }
             }
         }
+        frame.refresh();
     }
 
     public List<Integer> onDiceThrow() {
