@@ -1,4 +1,4 @@
-package ee.ut.cs.sysmodel;
+package ee.ut.cs.sysmodel.gui;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -7,12 +7,17 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import ee.ut.cs.sysmodel.Game;
+import ee.ut.cs.sysmodel.Player;
+import ee.ut.cs.sysmodel.Point;
+
 public class GFrame {
 
 	private Game game;
 	private List<GPoint> gPoints = new ArrayList<GPoint>();
 	
-	private Point fromPoint;
+	private GWidget moveFrom;
+	
 	private GBar player1Bar;
 	private GBar player2Bar;
 	
@@ -84,17 +89,18 @@ public class GFrame {
 		player2Bar.refresh();
 	}
 
-	public void onPointClick(Point point) {
-		if (isFromPointSelected() && fromPoint.getPosition() != point.getPosition()) {
-			game.onMove(fromPoint.getPosition(), point.getPosition());
-			fromPoint = null;
+	public void onWidgetClick(GWidget widget) {
+		if (isFromSelected() && moveFrom.getPosition() != widget.getPosition()) {
+			int from = moveFrom.getPosition();
+			moveFrom = null;
+			game.onMove(from, widget.getPosition());
 		} else {
-			this.fromPoint = point;
+			moveFrom = widget;
 		}
 	}
 	
-	private boolean isFromPointSelected() {
-		return fromPoint != null;
+	public boolean isFromSelected() {
+		return moveFrom != null;
 	}
 	
 }

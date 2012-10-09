@@ -3,6 +3,8 @@ package ee.ut.cs.sysmodel;
 import java.util.LinkedList;
 import java.util.List;
 
+import ee.ut.cs.sysmodel.gui.GFrame;
+
 /**
  * User: Karl Kilgi
  * Date: 10/7/12
