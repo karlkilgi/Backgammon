@@ -168,25 +168,42 @@ public class Game {
             for (Point populatedPoint : populatedPoints) {
                 for (int i = 0; i <= 1; i++) {
                     int fromPoint = populatedPoint.getPosition();
+                    int explodedHomePoint = Integer.MAX_VALUE;
+                    boolean explodedHomeMove = true;
                     //Detecting if player can put the checker to home
                     if (activePlayer == Player.PLAYER1) {
                         toPoint = fromPoint - throwResult.get(i);
                         if (toPoint < activePlayer.getHomePoint()) {
+                            explodedHomePoint = toPoint;
                             toPoint = activePlayer.getHomePoint();
                         }
                     } else {
                         toPoint = fromPoint + throwResult.get(i);
                         if (toPoint > activePlayer.getHomePoint()) {
+                            explodedHomePoint = toPoint;
                             toPoint = activePlayer.getHomePoint();
                         }
                     }
                     if (points[toPoint].canAdd(activePlayer)) {
-                        /*
-                        TODO check that player cant put checker from position
-                        1 to 0 if throw was 6 and in position 6 checker exists.
-                        */
                         if (homeGame && toPoint == activePlayer.getHomePoint()) {
-                            availableMoves.add(new Move(fromPoint, toPoint));
+                            if (explodedHomePoint == activePlayer.getHomePoint()) {
+                                availableMoves.add(new Move(fromPoint, toPoint));
+                            } else {
+                                for (Point populatedPointOnBoard : populatedPoints) {
+                                    if (activePlayer == Player.PLAYER1) {
+                                        if (populatedPoint.getPosition() < populatedPointOnBoard.getPosition() && explodedHomePoint < activePlayer.getHomePoint()) {
+                                            explodedHomeMove = false;
+                                        }
+                                    } else {
+                                        if (populatedPoint.getPosition() > populatedPointOnBoard.getPosition() && explodedHomePoint > activePlayer.getHomePoint()) {
+                                            explodedHomeMove = false;
+                                        }
+                                    }
+                                }
+                            }
+                            if (explodedHomeMove) {
+                                availableMoves.add(new Move(fromPoint, toPoint));
+                            }
                         }
                         if (toPoint != activePlayer.getHomePoint()) {
                             availableMoves.add(new Move(fromPoint, toPoint));
