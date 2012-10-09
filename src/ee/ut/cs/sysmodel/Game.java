@@ -19,6 +19,7 @@ public class Game {
     List<Move> availableMoves = new LinkedList<Move>();
     List<Integer> throwResults = new LinkedList<Integer>();
     Dice dice = new Dice();
+    private List<Integer> diceMovesLeft;
 
     Game() {
         initializeGame();
@@ -79,17 +80,24 @@ public class Game {
             if (move.equals(playerMove)) {
                 points[playerMove.getFromPoint()].removeChecker();
                 points[playerMove.getToPoint()].addChecker(activePlayer);
+                setAvailableMoves(getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint()));
+                if (availableMoves.isEmpty()) {
+                    changeActivePlayer();
+                }
             }
         }
     }
 
     public List<Integer> onDiceThrow() {
         throwResults = dice.throwDice();
+        diceMovesLeft = throwResults;
         setAvailableMoves(throwResults);
         if (availableMoves.isEmpty()) {
             changeActivePlayer();
+            return null;
+        } else {
+            return throwResults;
         }
-        return throwResults;
     }
 
     private void changeActivePlayer() {
@@ -103,26 +111,52 @@ public class Game {
 
     public void setAvailableMoves(List<Integer> throwResult) {
         availableMoves.clear();
+        int toPoint;
+        boolean homeGame = true;
         List<Point> populatedPoints = getActivePlayerPopulatedPoints();
-        if (throwResult.size() == 2) {
-            for (Point populatedPoint : populatedPoints) {
-                int fromPoint = populatedPoint.getPosition();
-                int toPoint = fromPoint + throwResult.get(0);
-                if (points[toPoint].canAdd(activePlayer)) {
-                    availableMoves.add(new Move(fromPoint, toPoint));
-                }
-                int toPoint2 = fromPoint + throwResult.get(1);
-                if (points[toPoint2].canAdd(activePlayer)) {
-                    availableMoves.add(new Move(fromPoint, toPoint2));
+        for (Point populatedPoint : populatedPoints) {
+            if (activePlayer == Player.PLAYER1) {
+                if (populatedPoint.getPosition() > 6) {
+                    homeGame = false;
                 }
             }
-            //No need to populate list with same possible moves.
-        } else {
-            for (Point populatedPoint : populatedPoints) {
+            if (activePlayer == Player.PLAYER2) {
+                if (populatedPoint.getPosition() < 19) {
+                    homeGame = false;
+                }
+            }
+        }
+
+        for (Point populatedPoint : populatedPoints) {
+            for (int i = 0; i <= 1; i++) {
                 int fromPoint = populatedPoint.getPosition();
-                int toPoint = fromPoint + throwResult.get(0);
+                //Detecting if player can put the checker to home
+                if (activePlayer == Player.PLAYER1) {
+                    toPoint = fromPoint - throwResult.get(i);
+                    if (toPoint < activePlayer.getHomePoint()) {
+                        toPoint = activePlayer.getHomePoint();
+                    }
+                } else {
+                    toPoint = fromPoint + throwResult.get(i);
+                    if (toPoint > activePlayer.getHomePoint()) {
+                        toPoint = activePlayer.getHomePoint();
+                    }
+                }
                 if (points[toPoint].canAdd(activePlayer)) {
-                    availableMoves.add(new Move(fromPoint, toPoint));
+                    /*
+                    TODO check that player cant put checker from position
+                    1 to 0 if throw was 6 and in position 6 checker exists.
+                    */
+                    if (homeGame && toPoint == activePlayer.getHomePoint()) {
+                        availableMoves.add(new Move(fromPoint, toPoint));
+                    }
+                    if (toPoint != activePlayer.getHomePoint()) {
+                        availableMoves.add(new Move(fromPoint, toPoint));
+                    }
+                }
+                //No need to populate list with same moves
+                if (throwResult.size() > 2) {
+                    break;
                 }
             }
         }
@@ -130,7 +164,7 @@ public class Game {
 
     public List<Point> getActivePlayerPopulatedPoints() {
         List<Point> populatedPoints = new LinkedList<Point>();
-        for (int i = 0; i <= 23; i++) {
+        for (int i = 1; i <= 24; i++) {
             if (points[i].getPlayer() == activePlayer) {
                 populatedPoints.add(points[i]);
             }
@@ -168,5 +202,16 @@ public class Game {
 
     public Bar getPlayer2Bar() {
         return player2Bar;
+    }
+
+    public List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
+        int usedMove;
+        if (activePlayer == Player.PLAYER1) {
+            usedMove = fromPoint - toPoint;
+        } else {
+            usedMove = toPoint - fromPoint;
+        }
+        diceMovesLeft.remove(usedMove);
+        return diceMovesLeft;
     }
 }
