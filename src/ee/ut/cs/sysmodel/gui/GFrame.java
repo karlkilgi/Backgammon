@@ -21,15 +21,22 @@ public class GFrame {
 	private GBar player1Bar;
 	private GBar player2Bar;
 	
+	private GHome player1Home;
+	private GHome player2Home;
+	
 	public GFrame(Game game) {
 		this.game = game;
+		player1Bar = new GBar(this, Player.PLAYER1);
+		player2Bar = new GBar(this, Player.PLAYER2);
+		player1Home = new GHome(this, Player.PLAYER1);
+		player2Home = new GHome(this, Player.PLAYER2);
 		buildGraphics();
 	}
 
 	private void buildGraphics() {
 		
 		GridLayout layout = new GridLayout();
-		layout.setColumns(14);
+		layout.setColumns(15);
 		layout.setRows(2);
 		layout.setHgap(10);
 		layout.setVgap(20);
@@ -47,7 +54,6 @@ public class GFrame {
 			createGPoint(i, frame, points);
 		}
 		
-		player1Bar = new GBar(this, Player.PLAYER1);
 		JPanel bar1Panel = new JPanel();
 		player1Bar.setPanel(bar1Panel);
 		frame.add(bar1Panel);
@@ -56,11 +62,14 @@ public class GFrame {
 			createGPoint(i, frame, points);
 		}
 		
+		JPanel home1Panel = new JPanel();
+		player1Home.setPanel(home1Panel);
+		frame.add(home1Panel);
+		
 		for (int i = 12; i >= 7; i--) {
 			createGPoint(i, frame, points);
 		}
 		
-		player2Bar = new GBar(this, Player.PLAYER2);
 		JPanel bar2Panel = new JPanel();
 		player2Bar.setPanel(bar2Panel);
 		frame.add(bar2Panel);
@@ -68,6 +77,10 @@ public class GFrame {
 		for (int i = 6; i >= 1; i--) {
 			createGPoint(i, frame, points);
 		}
+		
+		JPanel home2Panel = new JPanel();
+		player2Home.setPanel(home2Panel);
+		frame.add(home2Panel);
 		
 		refresh();
 		frame.setVisible(true);
@@ -81,26 +94,41 @@ public class GFrame {
 		gPoints.add(gPoint);
 	}
 	
-	public void refresh() {
-		for (GPoint gPoint : gPoints) {
-			gPoint.refresh();
-		}
-		player1Bar.refresh();
-		player2Bar.refresh();
-	}
-
 	public void onWidgetClick(GWidget widget) {
-		if (isFromSelected() && moveFrom.getPosition() != widget.getPosition()) {
-			int from = moveFrom.getPosition();
-			moveFrom = null;
-			game.onMove(from, widget.getPosition());
-		} else {
+		if (!isFromSelected()) {
 			moveFrom = widget;
+			return;
+		}
+		
+		if (isFromSelected() && moveFrom.getPosition() == widget.getPosition()) {
+			moveFrom.refresh();
+			moveFrom = null;
+			return;
+		}
+		
+		if (isFromSelected() && moveFrom.getPosition() != widget.getPosition()) {
+			game.onMove(moveFrom.getPosition(), widget.getPosition());
+			moveFrom.refresh();
+			widget.refresh();
+			moveFrom = null;
+			return;
 		}
 	}
 	
 	public boolean isFromSelected() {
 		return moveFrom != null;
+	}
+	
+	public void refresh() {
+		for (GPoint gPoint : gPoints) {
+			gPoint.refresh();
+		}
+		
+		player1Bar.refresh();
+		player2Bar.refresh();
+		
+		player1Home.refresh();
+		player2Home.refresh();
 	}
 	
 }

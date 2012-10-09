@@ -6,67 +6,66 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import ee.ut.cs.sysmodel.Player;
-import ee.ut.cs.sysmodel.Point;
 
-public class GPoint extends GWidget {
+public class GHome extends GWidget {
 
-	private Point point;
+	private Player player;
 	
-	public GPoint(GFrame frame, Point point) {
+	public GHome(GFrame frame, Player player) {
 		this.frame = frame;
-		this.point = point;
+		this.player = player;
 	}
-
+	
 	@Override
-	public void setPanel(final JPanel panel) {
+	protected void setPanel(final JPanel panel) {
 		this.panel = panel;
 		panel.setBackground(getBackgroundColor());
-		final GPoint gPoint = this;
+		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		final GHome gHome = this;
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!frame.isFromSelected() && getNumberOfCheckers() < 1) {
+				if (!frame.isFromSelected()) {
 					return;
 				}
+				frame.onWidgetClick(gHome);
 				panel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,2));
-				frame.onWidgetClick(gPoint);
 			}
 		});
-		panel.setLayout(getLayout());
-		panel.setVisible(true);
-	}
-	
-	@Override
-	protected boolean isUp() {
-		return point.getPosition() > 12;
-	}
-	
-	@Override
-	protected Color getBackgroundColor() {
-		return point.getPosition() % 2 == 0 ? Color.LIGHT_GRAY : Color.GRAY;
 	}
 
 	@Override
 	protected int getNumberOfCheckers() {
-		return point.getNumberOfCheckers();
+		return 0;
+	}
+
+	@Override
+	protected Color getBackgroundColor() {
+		return Color.PINK;
+	}
+
+	@Override
+	protected boolean isUp() {
+		return player == Player.PLAYER1;
 	}
 
 	@Override
 	protected Player getPlayer() {
-		return point.getPlayer();
+		return player;
 	}
 
 	@Override
 	public int getPosition() {
-		return point.getPosition();
+		return isUp() ? 25 : 0;
 	}
 
 	@Override
 	public Border getBorder() {
-		return BorderFactory.createEmptyBorder();
+		return BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 	}
-	
+
 }

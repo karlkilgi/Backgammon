@@ -240,10 +240,6 @@ public class Game {
         return points;
     }
 
-    private void setPoints(Point[] points) {
-        this.points = points;
-    }
-
     public List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
         Integer usedMove;
         if (activePlayer == Player.PLAYER1) {

@@ -6,6 +6,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 
 import ee.ut.cs.sysmodel.Player;
 
@@ -21,13 +23,13 @@ public class GBar extends GWidget {
 	@Override
 	public void setPanel(final JPanel panel) {
 		this.panel = panel;
-		panel.setBackground(Color.PINK);
+		panel.setBackground(getBackgroundColor());
 		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		final GBar gBar = this;
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!frame.isFromSelected() && getNumberOfCheckers() < 1) {
+				if (!frame.isFromSelected() && getNumberOfCheckers() > 0) {
 					return;
 				}
 				frame.onWidgetClick(gBar);
@@ -48,7 +50,7 @@ public class GBar extends GWidget {
 
 	@Override
 	protected Color getBackgroundColor() {
-		return panel.getBackground();
+		return Color.ORANGE;
 	}
 
 	@Override
@@ -58,7 +60,12 @@ public class GBar extends GWidget {
 
 	@Override
 	public int getPosition() {
-	return player == Player.PLAYER1 ? 25 : 0;
+	return isUp() ? 25 : 0;
+	}
+
+	@Override
+	public Border getBorder() {
+		return BorderFactory.createBevelBorder(BevelBorder.RAISED);
 	}
 	
 }

@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import ee.ut.cs.sysmodel.Player;
 
@@ -26,9 +27,11 @@ public abstract class GWidget {
 	
 	public abstract int getPosition();
 	
+	public abstract Border getBorder();
+	
 	public void refresh() {
 		panel.removeAll();
-		panel.setBorder(BorderFactory.createEmptyBorder());
+		panel.setBorder(getBorder());
 		int nrOfCheckers = getNumberOfCheckers();
 		for (int i = 0; i < nrOfCheckers; i++) {
 			JPanel checker = createChecker();
