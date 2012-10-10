@@ -11,7 +11,7 @@ import java.util.List;
  * Time: 10:10 PM
  */
 
-// TODO - kõik meetodid, mida ainult klassi sees kasutatakse -----> privaatseks
+// TODO - kÃµik meetodid, mida ainult klassi sees kasutatakse -----> privaatseks
 
 public class Game {
 
@@ -83,7 +83,7 @@ public class Game {
     }
 
     public void onMove(int fromPoint, int toPoint) {
-    	System.out.println(getActivePlayer().getName() + " made move " + fromPoint + "->" + toPoint);
+        System.out.println(getActivePlayer().getName() + " made move " + fromPoint + "->" + toPoint);
         boolean movesLeft;
         Move playerMove = new Move(fromPoint, toPoint);
         if (availableMoves.contains(playerMove)) {
@@ -101,11 +101,11 @@ public class Game {
             if (!movesLeft) {
                 setAvailableMoves(diceMovesLeft);
             } else {
-            	frame.refresh();
+                frame.refresh();
                 changeActivePlayer();
             }
             if (availableMoves.isEmpty()) {
-            	frame.refresh();
+                frame.refresh();
                 changeActivePlayer();
             }
         } else {
@@ -156,7 +156,7 @@ public class Game {
     public void setAvailableMoves(List<Integer> throwResult) {
         availableMoves.clear();
         int toPoint;
-        boolean homeGame = true;
+        boolean homeGame;
         if (throwResult.isEmpty()) {
             return;
         }
@@ -203,13 +203,13 @@ public class Game {
         }
         System.out.println("Available moves " + doShit());
     }
-    
+
     private String doShit() {
-    	String asd = "";
-    	for (Move a : availableMoves) {
-    		asd += a.getFromPoint() + ">" + a.getToPoint() + " "; 
-    	}
-    	return asd;
+        String asd = "";
+        for (Move a : availableMoves) {
+            asd += a.getFromPoint() + ">" + a.getToPoint() + " ";
+        }
+        return asd;
     }
 
     private void setAvailableMovesOutOfBar(List<Integer> throwResult) {
@@ -297,24 +297,35 @@ public class Game {
         return homeGame;
     }
 
-    public boolean isExplodedHomeMoveAllowed(boolean homeGame, int fromPoint, int toPoint, int explodedHomePoint, List<Point> populatedPoints, Point populatedPoint) {
-        boolean explodedHomeMove = true;
+    public boolean isExplodedHomeMoveAllowed(boolean homeGame, int fromPoint, int toPoint, int explodedHomePoint, List<Point> populatedPoints, Point populatedPointToMove) {
+        boolean explodedHomeMove = false;
         if (homeGame && toPoint == activePlayer.getHomePoint()) {
             if (explodedHomePoint == activePlayer.getHomePoint()) {
                 availableMoves.add(new Move(fromPoint, toPoint));
             } else {
+                Point furthestPointFromHome = populatedPointToMove;
                 for (Point populatedPointOnBoard : populatedPoints) {
                     if (activePlayer == Player.PLAYER1) {
-                        if (populatedPoint.getPosition() < populatedPointOnBoard.getPosition() && explodedHomePoint < activePlayer.getHomePoint()) {
-                            explodedHomeMove = false;
+                        if (populatedPointToMove.getPosition() < populatedPointOnBoard.getPosition() && explodedHomePoint < activePlayer.getHomePoint()) {
+                            furthestPointFromHome = populatedPointOnBoard;
                         }
                     } else {
-                        if (populatedPoint.getPosition() > populatedPointOnBoard.getPosition() && explodedHomePoint > activePlayer.getHomePoint()) {
-                            explodedHomeMove = false;
+                        if (populatedPointToMove.getPosition() > populatedPointOnBoard.getPosition() && explodedHomePoint > activePlayer.getHomePoint()) {
+                            furthestPointFromHome = populatedPointOnBoard;
                         }
                     }
                 }
+                if (activePlayer == Player.PLAYER1) {
+                    if (populatedPointToMove.getPosition() >= furthestPointFromHome.getPosition()) {
+                        explodedHomeMove = true;
+                    }
+                } else {
+                    if (populatedPointToMove.getPosition() <= furthestPointFromHome.getPosition()) {
+                        explodedHomeMove = true;
+                    }
+                }
             }
+
         }
         return explodedHomeMove;
     }
