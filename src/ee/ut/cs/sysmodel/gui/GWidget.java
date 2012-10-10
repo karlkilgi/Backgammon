@@ -2,6 +2,7 @@ package ee.ut.cs.sysmodel.gui;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -15,8 +16,6 @@ public abstract class GWidget {
 	protected GFrame frame;
 	protected JPanel panel;
 	
-	protected abstract void setPanel(JPanel panel);
-	
 	protected abstract int getNumberOfCheckers();
 	
 	protected abstract Color getBackgroundColor();
@@ -28,6 +27,16 @@ public abstract class GWidget {
 	public abstract int getPosition();
 	
 	public abstract Border getBorder();
+	
+	public abstract MouseAdapter getMouseAdapter();
+	
+	public void setPanel(final JPanel panel) {
+		this.panel = panel;
+		panel.setBackground(getBackgroundColor());
+		panel.setBorder(getBorder());
+		panel.addMouseListener(getMouseAdapter());
+		panel.setLayout(getLayout());
+	}
 	
 	public void refresh() {
 		panel.removeAll();

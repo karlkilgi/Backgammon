@@ -11,6 +11,8 @@ import java.util.List;
  * Time: 10:10 PM
  */
 
+// TODO - kõik meetodid, mida ainult klassi sees kasutatakse -----> privaatseks
+
 public class Game {
 
     private int betSize = 1;
@@ -81,32 +83,9 @@ public class Game {
     }
 
     public void onMove(int fromPoint, int toPoint) {
+    	System.out.println(getActivePlayer().getName() + " made move " + fromPoint + "->" + toPoint);
         boolean movesLeft;
         Move playerMove = new Move(fromPoint, toPoint);
-//        for (Move move : availableMoves) {
-//            if (move.equals(playerMove)) {
-//                if (activePlayer.getBar().isEmpty()) {
-//                    points[playerMove.getFromPoint()].removeChecker();
-//                } else {
-//                    activePlayer.getBar().removeChecker();
-//                }
-//                boolean checkerToBar = points[playerMove.getToPoint()].addChecker(activePlayer);
-//                if (checkerToBar) {
-//                    sendCheckerToBar();
-//                }
-//                getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
-//                movesLeft = diceMovesLeft.isEmpty();
-//                if (!movesLeft) {
-//                    setAvailableMoves(diceMovesLeft);
-//                } else {
-//                    changeActivePlayer();
-//                }
-//                if (availableMoves.isEmpty()) {
-//                    changeActivePlayer();
-//                }
-//            }
-//        }
-
         if (availableMoves.contains(playerMove)) {
             if (activePlayer.getBar().isEmpty()) {
                 points[playerMove.getFromPoint()].removeChecker();
@@ -122,15 +101,16 @@ public class Game {
             if (!movesLeft) {
                 setAvailableMoves(diceMovesLeft);
             } else {
+            	frame.refresh();
                 changeActivePlayer();
             }
             if (availableMoves.isEmpty()) {
+            	frame.refresh();
                 changeActivePlayer();
             }
         } else {
             frame.showIllegalMovePopUp();
         }
-        frame.refresh();
     }
 
     public List<Integer> onDiceThrow() {
@@ -153,6 +133,7 @@ public class Game {
         }
         diceMovesLeft = throwResults;
         setAvailableMoves(throwResults);
+        frame.refresh();
         if (availableMoves.isEmpty()) {
             changeActivePlayer();
             return null;
@@ -163,13 +144,13 @@ public class Game {
     }
 
     private void changeActivePlayer() {
-        //TODO set text about no moves left, changing player
         if (activePlayer == Player.PLAYER1) {
             setActivePlayer(Player.PLAYER2);
         } else {
             setActivePlayer(Player.PLAYER1);
         }
         frame.showChangePlayersPopup();
+        onDiceThrow();
     }
 
     public void setAvailableMoves(List<Integer> throwResult) {
@@ -220,6 +201,15 @@ public class Game {
                 }
             }
         }
+        System.out.println("Available moves " + doShit());
+    }
+    
+    private String doShit() {
+    	String asd = "";
+    	for (Move a : availableMoves) {
+    		asd += a.getFromPoint() + ">" + a.getToPoint() + " "; 
+    	}
+    	return asd;
     }
 
     private void setAvailableMovesOutOfBar(List<Integer> throwResult) {

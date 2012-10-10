@@ -1,6 +1,9 @@
 package ee.ut.cs.sysmodel.gui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,22 +29,98 @@ public class GFrame {
 	private GHome player2Home;
 	
 	private JFrame frame;
+	
+	private GInfo infoPanel;
 
 	public GFrame(Game game) {
 		this.game = game;
-		player1Bar = new GBar(this, Player.PLAYER1);
-		player2Bar = new GBar(this, Player.PLAYER2);
-		player1Home = new GHome(this, Player.PLAYER1);
-		player2Home = new GHome(this, Player.PLAYER2);
-		buildGraphics();
+		createFrame();
 	}
 
+	private void createFrame() {
+		frame = new JFrame("Backgammon");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds(100, 100, 600, 400);
+		frame.setResizable(false);
+		frame.setLayout(new GridBagLayout());
+		frame.setResizable(true);
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.ipady = 20;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		
+		frame.add(createMainPanel(), c);
+		
+		c.insets = new Insets(10,0,0,0);
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		frame.add(createInfoPanel(), c);
+		frame.setVisible(true);
+
+		refresh();
+	}
+	
+	private JPanel createInfoPanel() {
+		JPanel panel = new JPanel();
+		infoPanel = new GInfo(game);
+		infoPanel.setPanel(panel);
+		return panel;
+	}
+
+	public void onWidgetClick(GWidget widget) {
+		if (!isFromSelected()) {
+			moveFrom = widget;
+			return;
+		}
+
+		if (isFromSelected() && moveFrom.getPosition() == widget.getPosition()) {
+			moveFrom.refresh();
+			moveFrom = null;
+			return;
+		}
+
+		if (isFromSelected() && moveFrom.getPosition() != widget.getPosition()) {
+			try {
+				game.onMove(moveFrom.getPosition(), widget.getPosition());
+			} catch (IndexOutOfBoundsException e) {
+				
+			}
+			moveFrom.refresh();
+			widget.refresh();
+			moveFrom = null;
+		}
+	}
+
+	public boolean isFromSelected() {
+		return moveFrom != null;
+	}
+
+	public void refresh() {
+		for (GPoint gPoint : gPoints) {
+			gPoint.refresh();
+		}
+		player1Bar.refresh();
+		player2Bar.refresh();
+
+		player1Home.refresh();
+		player2Home.refresh();
+		
+		infoPanel.refresh();
+	}
+	
+	// Popups start here
 	public void showChangePlayersPopup() {
 		String message = game.getInActivePlayer().getName()
 				+ ", your turn is over. " + game.getActivePlayer().getName()
 				+ ", throw dice";
 		JOptionPane.showMessageDialog(frame, message);
-		game.onDiceThrow();
 	}
 	
 	public void showBeginningPopup() {
@@ -66,8 +145,13 @@ public class GFrame {
 	      }
 	      return str;
 	}
-
-	private void buildGraphics() {
+	
+	// Popups end here
+	
+	
+	// Building graphics starts here
+	
+	private JPanel createMainPanel() {
 
 		GridLayout layout = new GridLayout();
 		layout.setColumns(15);
@@ -75,94 +159,72 @@ public class GFrame {
 		layout.setHgap(10);
 		layout.setVgap(20);
 
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 600, 400);
-		frame.setResizable(false);
-
-		frame.setLayout(layout);
+		player1Bar = new GBar(this, Player.PLAYER1);
+		player2Bar = new GBar(this, Player.PLAYER2);
+		player1Home = new GHome(this, Player.PLAYER1);
+		player2Home = new GHome(this, Player.PLAYER2);
+		
+		JPanel mainPanel = new JPanel();
+		
+		mainPanel.setLayout(layout);
 
 		Point[] points = game.getPoints();
 
 		for (int i = 13; i <= 18; i++) {
-			createGPoint(i, frame, points);
+			createGPoint(i, points, mainPanel);
 		}
 
-		JPanel bar1Panel = new JPanel();
-		player1Bar.setPanel(bar1Panel);
-		frame.add(bar1Panel);
+		createGBar(Player.PLAYER1, mainPanel);
 
 		for (int i = 19; i <= 24; i++) {
-			createGPoint(i, frame, points);
+			createGPoint(i, points, mainPanel);
 		}
 
-		JPanel home1Panel = new JPanel();
-		player1Home.setPanel(home1Panel);
-		frame.add(home1Panel);
+		createGHome(Player.PLAYER2, mainPanel);
 
 		for (int i = 12; i >= 7; i--) {
-			createGPoint(i, frame, points);
+			createGPoint(i, points, mainPanel);
 		}
 
-		JPanel bar2Panel = new JPanel();
-		player2Bar.setPanel(bar2Panel);
-		frame.add(bar2Panel);
+		createGBar(Player.PLAYER2, mainPanel);
 
 		for (int i = 6; i >= 1; i--) {
-			createGPoint(i, frame, points);
+			createGPoint(i, points, mainPanel);
 		}
 
-		JPanel home2Panel = new JPanel();
-		player2Home.setPanel(home2Panel);
-		frame.add(home2Panel);
-
-		refresh();
-		frame.setVisible(true);
+		createGHome(Player.PLAYER1, mainPanel);
+		
+		return mainPanel;
+	}
+	
+	private void createGHome(Player player, JPanel mainPanel) {
+		JPanel panel = new JPanel();
+		if (player == Player.PLAYER1) {
+			player1Home.setPanel(panel);
+		} else {
+			player2Home.setPanel(panel);
+		}
+		mainPanel.add(panel);
+	}
+	
+	private void createGBar(Player player, JPanel mainPanel) {
+		JPanel panel = new JPanel();
+		if (player == Player.PLAYER1) {
+			player1Bar.setPanel(panel);
+		} else {
+			player2Bar.setPanel(panel);
+		}
+		mainPanel.add(panel);
 	}
 
-	private void createGPoint(int i, JFrame frame, Point[] points) {
+	private void createGPoint(int i, Point[] points, JPanel mainPanel) {
 		GPoint gPoint = new GPoint(this, points[i]);
 		JPanel panel = new JPanel();
 		gPoint.setPanel(panel);
-		frame.add(panel);
+		mainPanel.add(panel);
 		gPoints.add(gPoint);
 	}
-
-	public void onWidgetClick(GWidget widget) {
-		if (!isFromSelected()) {
-			moveFrom = widget;
-			return;
-		}
-
-		if (isFromSelected() && moveFrom.getPosition() == widget.getPosition()) {
-			moveFrom.refresh();
-			moveFrom = null;
-			return;
-		}
-
-		if (isFromSelected() && moveFrom.getPosition() != widget.getPosition()) {
-			game.onMove(moveFrom.getPosition(), widget.getPosition());
-			moveFrom.refresh();
-			widget.refresh();
-			moveFrom = null;
-			return;
-		}
-	}
-
-	public boolean isFromSelected() {
-		return moveFrom != null;
-	}
-
-	public void refresh() {
-		for (GPoint gPoint : gPoints) {
-			gPoint.refresh();
-		}
-
-		player1Bar.refresh();
-		player2Bar.refresh();
-
-		player1Home.refresh();
-		player2Home.refresh();
-	}
+	
+	// Building graphics ends here
 
 }
