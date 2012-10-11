@@ -128,21 +128,13 @@ public class GFrame {
 	}
 	
 	public void showDiceResultsPopup(List<Integer> results) {
-		String message = game.getActivePlayer().getName() + " threw " + getThrowResultsAsString(results);
+		String message = game.getActivePlayer().getName() + " threw " + getIntegerListAsString(results);
 		showPopup(message, "OK", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void showIllegalMovePopUp() {
 		String message = "Illegal move!";
 		showPopup(message, "OK", JOptionPane.WARNING_MESSAGE);
-	}
-	
-	private String getThrowResultsAsString(List<Integer> results) {
-	      String str = "";
-	      for (Integer i : results) {
-	    	  str += i.toString() + " ";
-	      }
-	      return str;
 	}
 	
 	private void showPopup(String message, String buttonText, int messageType) {
@@ -281,7 +273,7 @@ public class GFrame {
     // GETTERS FOR INFO PANEL start here
     
     public String getDiceInfo() {
-      return "TODO";
+      return getIntegerListAsString(game.getDiceMovesLeft());
     }
     
     public String getPlayerInfo() {
@@ -295,8 +287,18 @@ public class GFrame {
     public String getAdditionalInfo() {
       return "TODO";
     }
-
-
+    
     // GETTERS FOR INFO PANEL start here
+    
+    private String getIntegerListAsString(List<Integer> list) {
+      if (list == null || list.isEmpty()) {
+        return "none";
+      }
+      String str = "";
+      for (Integer i : list) {
+          str += i.toString() + " ";
+      }
+      return str;
+}
 
 }
