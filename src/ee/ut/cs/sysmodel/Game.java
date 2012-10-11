@@ -71,7 +71,7 @@ public class Game {
         Game game = new Game();
     }
 
-    public void onBetIncrease() {
+    public void increaseBet() {
         betSize = betSize * 2;
     }
 
@@ -267,7 +267,7 @@ public class Game {
         return points;
     }
 
-    public List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
+    private List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
         Integer usedMove;
         if (activePlayer == Player.PLAYER1) {
             usedMove = fromPoint - toPoint;

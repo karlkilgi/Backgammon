@@ -1,5 +1,9 @@
 package ee.ut.cs.sysmodel.gui;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -63,6 +67,11 @@ public class GFrame {
 			moveFrom = null;
 		}
 	}
+	
+    public void onDoubleBet() {
+      game.increaseBet();
+      infoPanel.refresh();
+    }
 
 	// Is starting position of a move selected
 	public boolean isFromSelected() {
@@ -83,28 +92,28 @@ public class GFrame {
 		infoPanel.refresh();
 	}
 	
-	// POPU PS start here
+	// POP UPS start here
 	
 	public void showChangePlayersPopup() {
 		String message = game.getInActivePlayer().getName()
 				+ ", your turn is over. " + game.getActivePlayer().getName()
 				+ ", throw dice";
-		JOptionPane.showMessageDialog(frame, message);
+		showPopup(message, "Throw", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void showBeginningPopup() {
 		String message = "Game started. Throw dice to choose starting player";
-		JOptionPane.showMessageDialog(frame, message);
+		showPopup(message, "Throw", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void showDiceResultsPopup(List<Integer> results) {
 		String message = game.getActivePlayer().getName() + " threw " + getThrowResultsAsString(results);
-		JOptionPane.showMessageDialog(frame, message);
+		showPopup(message, "OK", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void showIllegalMovePopUp() {
 		String message = "Illegal move!";
-		JOptionPane.showMessageDialog(frame, message);
+		showPopup(message, "OK", JOptionPane.WARNING_MESSAGE);
 	}
 	
 	private String getThrowResultsAsString(List<Integer> results) {
@@ -113,6 +122,18 @@ public class GFrame {
 	    	  str += i.toString() + " ";
 	      }
 	      return str;
+	}
+	
+	private void showPopup(String message, String buttonText, int messageType) {
+	  Object[] options = {buttonText};
+	     JOptionPane.showOptionDialog(frame,
+	            message,
+	            "",
+	            JOptionPane.OK_OPTION,
+	            messageType,
+	            null,
+	            options,
+	            options[0]);
 	}
 	
 	// POP UPS end here
@@ -166,6 +187,7 @@ public class GFrame {
 		player2Home = new GHome(this, Player.PLAYER2);
 		
 		JPanel mainPanel = new JPanel();
+		mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		mainPanel.setLayout(layout);
 
@@ -228,11 +250,31 @@ public class GFrame {
 	
     private JPanel createInfoPanel() {
       JPanel panel = new JPanel();
-      infoPanel = new GInfo(game);
+      infoPanel = new GInfo(this);
       infoPanel.setPanel(panel);
       return panel;
     }
 
 	// CREATING GRAPHICS ends here
+    
+    // GETTERS FOR INFO PANEL start here
+    
+    public String getDiceInfo() {
+      return "TODO";
+    }
+    
+    public String getPlayerInfo() {
+      return game.getActivePlayer().getName();
+    }
+    
+    public String getBetInfo() {
+      return Integer.toString(game.getBetSize());
+    }
+    
+    public String getAdditionalInfo() {
+      return "TODO";
+    }
+
+    // GETTERS FOR INFO PANEL start here
 
 }
