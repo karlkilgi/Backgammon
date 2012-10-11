@@ -72,7 +72,9 @@ public class Game {
     }
 
     public void increaseBet() {
-        betSize = betSize * 2;
+        if (betSize < 64) {
+            betSize = betSize * 2;
+        }
     }
 
     public void sendCheckerToBar() {
@@ -159,6 +161,9 @@ public class Game {
         availableMoves.clear();
         int toPoint;
         boolean homeGame;
+        if (isPlayerWon(activePlayer)) {
+            onWin(activePlayer);
+        }
         if (throwResult.isEmpty()) {
             return;
         }
@@ -173,12 +178,12 @@ public class Game {
                     int explodedHomePoint = Integer.MAX_VALUE;
                     if (activePlayer == Player.PLAYER1) {
                         toPoint = fromPoint - throwResult.get(i);
-                        if(toPoint < Player.PLAYER1.getHomePoint())            {
+                        if (toPoint < Player.PLAYER1.getHomePoint()) {
                             toPoint = Player.PLAYER1.getHomePoint();
                         }
                     } else {
                         toPoint = fromPoint + throwResult.get(i);
-                        if(toPoint > Player.PLAYER2.getHomePoint())            {
+                        if (toPoint > Player.PLAYER2.getHomePoint()) {
                             toPoint = Player.PLAYER2.getHomePoint();
                         }
                     }
@@ -282,9 +287,9 @@ public class Game {
         }
         diceMovesLeft.remove(usedMove);
     }
-    
+
     public List<Integer> getDiceMovesLeft() {
-      return diceMovesLeft;
+        return diceMovesLeft;
     }
 
     public boolean isHomeGame(List<Point> populatedPoints) {
@@ -339,5 +344,17 @@ public class Game {
 
         }
         return explodedHomeMove;
+    }
+
+    private boolean isPlayerWon(Player player) {
+        return points[activePlayer.getHomePoint()].getNumberOfCheckers() == 15;
+    }
+
+    public void onWin(Player player) {
+
+    }
+
+    public void startNewGame() {
+
     }
 }
