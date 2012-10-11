@@ -54,6 +54,9 @@ public class GBar extends GWidget {
 		return new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+			    // If player tries to move a checker ON the bar
+			    // or tries to move a checker from an empty bar
+			    // then do nothing
 				if (frame.isFromSelected() || getNumberOfCheckers() < 1) {
 					return;
 				}

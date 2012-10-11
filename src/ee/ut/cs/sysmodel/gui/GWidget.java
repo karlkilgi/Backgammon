@@ -28,6 +28,8 @@ public abstract class GWidget {
 	
 	public abstract Border getBorder();
 	
+	// Mouse listener which handles clicks on the widget
+	// and decides whether to notice the frame
 	public abstract MouseAdapter getMouseAdapter();
 	
 	public void setPanel(final JPanel panel) {
@@ -46,6 +48,8 @@ public abstract class GWidget {
 			JPanel checker = createChecker();
 			panel.add(checker);
 		}
+		// If widget is not upper, we need to add "invisible" checkers
+		// to top of the widget to push real checkers downwards
 		if (!isUp()) {
 			for (int i = 0; i < 15 - nrOfCheckers; i++ ) {
 				JPanel emptyPanel = createEmptyChecker();
@@ -61,6 +65,7 @@ public abstract class GWidget {
 		return checker;
 	}
 	
+	// Creates "invisible" checkers
 	protected JPanel createEmptyChecker() {
 		JPanel checker = new JPanel();
 		checker.setBackground(getBackgroundColor());

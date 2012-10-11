@@ -37,55 +37,25 @@ public class GFrame {
 		createFrame();
 	}
 
-	private void createFrame() {
-		frame = new JFrame("Backgammon");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 600, 400);
-		frame.setResizable(false);
-		frame.setLayout(new GridBagLayout());
-		frame.setResizable(true);
-		
-		GridBagConstraints c = new GridBagConstraints();
-		c.ipady = 20;
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		
-		frame.add(createMainPanel(), c);
-		
-		c.insets = new Insets(10,0,0,0);
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 1.0;
-		c.weighty = 0.0;
-		frame.add(createInfoPanel(), c);
-		frame.setVisible(true);
-
-		refresh();
-	}
-	
-	private JPanel createInfoPanel() {
-		JPanel panel = new JPanel();
-		infoPanel = new GInfo(game);
-		infoPanel.setPanel(panel);
-		return panel;
-	}
-
+	// Handles events from points, bars and homes
 	public void onWidgetClick(GWidget widget) {
+	    // If starting position of a move has not been set yet
+	    // then register the widget as one
 		if (!isFromSelected()) {
 			moveFrom = widget;
 			return;
 		}
 
+		// If widget's starting position is the same as registered starting position
+		// then unregister the starting position (unselect the widget)
 		if (isFromSelected() && moveFrom.getPosition() == widget.getPosition()) {
 			moveFrom.refresh();
 			moveFrom = null;
 			return;
 		}
 
+		// If we have both starting and ending position of a move
+		// then send the move to THE GAME
 		if (isFromSelected() && moveFrom.getPosition() != widget.getPosition()) {
 			game.onMove(moveFrom.getPosition(), widget.getPosition());
 			moveFrom.refresh();
@@ -94,10 +64,12 @@ public class GFrame {
 		}
 	}
 
+	// Is starting position of a move selected
 	public boolean isFromSelected() {
 		return moveFrom != null;
 	}
 
+	// Repaint the whole frame
 	public void refresh() {
 		for (GPoint gPoint : gPoints) {
 			gPoint.refresh();
@@ -111,7 +83,8 @@ public class GFrame {
 		infoPanel.refresh();
 	}
 	
-	// Popups start here
+	// POPU PS start here
+	
 	public void showChangePlayersPopup() {
 		String message = game.getInActivePlayer().getName()
 				+ ", your turn is over. " + game.getActivePlayer().getName()
@@ -124,7 +97,7 @@ public class GFrame {
 		JOptionPane.showMessageDialog(frame, message);
 	}
 	
-	public void showDiceResults(List<Integer> results) {
+	public void showDiceResultsPopup(List<Integer> results) {
 		String message = game.getActivePlayer().getName() + " threw " + getThrowResultsAsString(results);
 		JOptionPane.showMessageDialog(frame, message);
 	}
@@ -142,11 +115,43 @@ public class GFrame {
 	      return str;
 	}
 	
-	// Popups end here
+	// POP UPS end here
 	
 	
-	// Building graphics starts here
+	// CREATING GRAPHICS starts here (here be dragons)
 	
+	// Creates the main window and adds the main panel and the info panel to it
+    private void createFrame() {
+	        frame = new JFrame("Backgammon");
+	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        frame.setBounds(100, 100, 600, 400);
+	        frame.setResizable(false);
+	        frame.setLayout(new GridBagLayout());
+	        frame.setResizable(true);
+	        
+	        GridBagConstraints c = new GridBagConstraints();
+	        c.ipady = 20;
+	        c.gridwidth = GridBagConstraints.REMAINDER;
+	        c.fill = GridBagConstraints.HORIZONTAL;
+	        c.gridx = 0;
+	        c.gridy = 0;
+	        c.weightx = 1.0;
+	        c.weighty = 1.0;
+	        
+	        frame.add(createMainPanel(), c);
+	        
+	        c.insets = new Insets(10,0,0,0);
+	        c.gridx = 0;
+	        c.gridy = 1;
+	        c.weightx = 1.0;
+	        c.weighty = 0.0;
+	        frame.add(createInfoPanel(), c);
+	        frame.setVisible(true);
+
+	        refresh();
+	    }
+	    
+	// Creates the main panel and adds points, bars and homes to it
 	private JPanel createMainPanel() {
 
 		GridLayout layout = new GridLayout();
@@ -193,6 +198,14 @@ public class GFrame {
 		return mainPanel;
 	}
 	
+	private void createGPoint(int i, Point[] points, JPanel mainPanel) {
+	        GPoint gPoint = new GPoint(this, points[i]);
+	        JPanel panel = new JPanel();
+	        gPoint.setPanel(panel);
+	        mainPanel.add(panel);
+	        gPoints.add(gPoint);
+	}
+	
 	private void createGHome(Player player, JPanel mainPanel) {
 		JPanel panel = new JPanel();
 		if (player == Player.PLAYER1) {
@@ -212,15 +225,14 @@ public class GFrame {
 		}
 		mainPanel.add(panel);
 	}
-
-	private void createGPoint(int i, Point[] points, JPanel mainPanel) {
-		GPoint gPoint = new GPoint(this, points[i]);
-		JPanel panel = new JPanel();
-		gPoint.setPanel(panel);
-		mainPanel.add(panel);
-		gPoints.add(gPoint);
-	}
 	
-	// Building graphics ends here
+    private JPanel createInfoPanel() {
+      JPanel panel = new JPanel();
+      infoPanel = new GInfo(game);
+      infoPanel.setPanel(panel);
+      return panel;
+    }
+
+	// CREATING GRAPHICS ends here
 
 }

@@ -54,6 +54,7 @@ public class GHome extends GWidget {
 		final GHome w = this;
 		return new MouseAdapter() {
 			@Override
+			// If player tries to move a checker FROM the home then do nothing
 			public void mouseClicked(MouseEvent e) {
 				if (!frame.isFromSelected()) {
 					return;

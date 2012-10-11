@@ -55,9 +55,11 @@ public class GPoint extends GWidget {
 		return new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+			    // If player tries to start a move from an empty point do nothing
 				if (!frame.isFromSelected() && getNumberOfCheckers() < 1) {
 					return;
 				}
+				// Highlight the point
 				panel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,2));
 				frame.onWidgetClick(gPoint);
 			}

@@ -140,7 +140,7 @@ public class Game {
             changeActivePlayer();
             return null;
         } else {
-            frame.showDiceResults(throwResults);
+            frame.showDiceResultsPopup(throwResults);
             return throwResults;
         }
     }
