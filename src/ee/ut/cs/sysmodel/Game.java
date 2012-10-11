@@ -104,6 +104,7 @@ public class Game {
             movesLeft = diceMovesLeft.isEmpty();
             if (!movesLeft) {
                 setAvailableMoves(diceMovesLeft);
+                frame.refresh();
             } else {
                 frame.refresh();
                 changeActivePlayer();
