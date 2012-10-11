@@ -12,6 +12,7 @@ import java.util.List;
  */
 
 // TODO - kõik meetodid, mida ainult klassi sees kasutatakse -----> privaatseks
+// TODO - getterid infopaneeli jaoks
 
 public class Game {
 
@@ -80,6 +81,7 @@ public class Game {
         } else {
             Player.PLAYER1.getBar().addChecker();
         }
+        frame.refresh();
     }
 
     public void onMove(int fromPoint, int toPoint) {

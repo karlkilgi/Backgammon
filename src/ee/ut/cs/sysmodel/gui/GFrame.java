@@ -87,11 +87,7 @@ public class GFrame {
 		}
 
 		if (isFromSelected() && moveFrom.getPosition() != widget.getPosition()) {
-			try {
-				game.onMove(moveFrom.getPosition(), widget.getPosition());
-			} catch (IndexOutOfBoundsException e) {
-				
-			}
+			game.onMove(moveFrom.getPosition(), widget.getPosition());
 			moveFrom.refresh();
 			widget.refresh();
 			moveFrom = null;
