@@ -40,7 +40,29 @@ public class GFrame {
 		this.game = game;
 		createFrame();
 	}
+	
 
+    // Is starting position of a move selected
+    public boolean isFromSelected() {
+        return moveFrom != null;
+    }
+
+    // Repaint the whole frame
+    public void refresh() {
+        for (GPoint gPoint : gPoints) {
+            gPoint.refresh();
+        }
+        player1Bar.refresh();
+        player2Bar.refresh();
+
+        player1Home.refresh();
+        player2Home.refresh();
+        
+        infoPanel.refresh();
+    }
+
+	// EVENT HANDLERS start here
+	
 	// Handles events from points, bars and homes
 	public void onWidgetClick(GWidget widget) {
 	    // If starting position of a move has not been set yet
@@ -72,25 +94,24 @@ public class GFrame {
       game.increaseBet();
       infoPanel.refresh();
     }
-
-	// Is starting position of a move selected
-	public boolean isFromSelected() {
-		return moveFrom != null;
-	}
-
-	// Repaint the whole frame
-	public void refresh() {
-		for (GPoint gPoint : gPoints) {
-			gPoint.refresh();
-		}
-		player1Bar.refresh();
-		player2Bar.refresh();
-
-		player1Home.refresh();
-		player2Home.refresh();
-		
-		infoPanel.refresh();
-	}
+    
+    public void onNewgame() {
+      String message = "Are you sure you want to cancel the game and start a new one?";
+      Object[] options = {"yea wadeva", "naw bro"};
+      int answer = JOptionPane.showOptionDialog(frame,
+          message,
+          "Start a new game",
+          JOptionPane.OK_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE,
+          null,
+          options,
+          options[0]);
+      if (answer == 0) {
+        // TODO game.startNewGame();
+      }
+    }
+    
+    // EVENT HANDLERS end here
 	
 	// POP UPS start here
 	
@@ -274,6 +295,7 @@ public class GFrame {
     public String getAdditionalInfo() {
       return "TODO";
     }
+
 
     // GETTERS FOR INFO PANEL start here
 

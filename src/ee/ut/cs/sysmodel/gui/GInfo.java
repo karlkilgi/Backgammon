@@ -20,10 +20,11 @@ public class GInfo {
 
 	private GFrame frame;
 	private JPanel panel;
-	private JLabel dice;
-	private JLabel activePlayer;
-	private JLabel bet;
+	private JLabel diceLabel;
+	private JLabel activePlayerLabel;
+	private JLabel betLabel;
 	private JButton doubleBetButton;
+	private JButton newGameButton;
 	
 	public GInfo(GFrame frame) {
 		this.frame = frame;
@@ -37,13 +38,13 @@ public class GInfo {
 		FlowLayout layout = new FlowLayout(FlowLayout.LEADING, 20, 0);
 		panel.setLayout(layout);
 		
-		dice = new JLabel();
-		activePlayer = new JLabel();
-		bet = new JLabel();
+		diceLabel = new JLabel();
+		activePlayerLabel = new JLabel();
+		betLabel = new JLabel();
 		
-		panel.add(activePlayer);
-		panel.add(dice);
-		panel.add(bet);
+		panel.add(activePlayerLabel);
+		panel.add(diceLabel);
+		panel.add(betLabel);
 		
 		doubleBetButton = new JButton("Double bet");
 		doubleBetButton.addActionListener(new ActionListener() {
@@ -55,12 +56,23 @@ public class GInfo {
         });
 		
 		panel.add(doubleBetButton);
+		
+		newGameButton = new JButton();
+		newGameButton.addActionListener(new ActionListener() {
+          
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            frame.onNewgame();
+          }
+        });
+		
+		panel.add(newGameButton);
 	}
 	
 	public void refresh() {
-		activePlayer.setText("Active player: " + frame.getPlayerInfo());
-		dice.setText("Dice: " + frame.getDiceInfo());
-		bet.setText("Bet : " + frame.getBetInfo());
+		activePlayerLabel.setText("Turn: " + frame.getPlayerInfo());
+		diceLabel.setText("Dice: " + frame.getDiceInfo());
+		betLabel.setText("Bet : " + frame.getBetInfo());
 	}
 	
 }

@@ -10,9 +10,9 @@ import java.util.List;
  * Date: 10/7/12
  * Time: 10:10 PM
  */
-
 // TODO - kõik meetodid, mida ainult klassi sees kasutatakse -----> privaatseks
 // TODO - getterid infopaneeli jaoks
+// TODO - lisada selline loogika, et saaks uut mängu alustada (nt pärast käesoleva katkestamist või läbisaamist)
 
 public class Game {
 
