@@ -114,6 +114,13 @@ public class GFrame {
 	
 	// POP UPS start here
 	
+    public void showStartingPlayerPopup(List<Integer> throwresults) {
+      String message = Player.PLAYER1.getName() + " threw " + throwresults.get(0) + "\n";
+      message += Player.PLAYER2.getName() + " threw " + throwresults.get(1) + "\n\n";
+      message += game.getActivePlayer().getName() + " starts!";
+      showMessagePopup(message, "OK", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
 	public void showChangePlayersPopup() {
 		String message = game.getInActivePlayer().getName()
 				+ ", your turn is over. " + game.getActivePlayer().getName()
@@ -331,6 +338,6 @@ public class GFrame {
           str += i.toString() + " ";
       }
       return str;
-}
+    }
 
 }

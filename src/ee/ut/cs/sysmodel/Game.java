@@ -120,20 +120,7 @@ public class Game {
     public void onDiceThrow() {
         throwResults = dice.throwDice();
         if (activePlayer == Player.NONE) {
-            frame.showBeginningPopup();
-            boolean startingGame = true;
-            while (startingGame) {
-                if (throwResults.get(0) > throwResults.get(1)) {
-                    activePlayer = Player.PLAYER1;
-                    startingGame = false;
-                }
-                if (throwResults.get(0) < throwResults.get(1)) {
-                    activePlayer = Player.PLAYER2;
-                    startingGame = false;
-                } else {
-                    throwResults = dice.throwDice();
-                }
-            }
+          setStartingPlayer();
         }
         diceMovesLeft = throwResults;
         setAvailableMoves(throwResults);
@@ -141,6 +128,25 @@ public class Game {
         if (availableMoves.isEmpty()) {
             changeActivePlayer();
         }
+    }
+    
+    private void setStartingPlayer() {
+      frame.showBeginningPopup();
+      boolean startingGame = true;
+      while (startingGame) {
+          if (throwResults.get(0) > throwResults.get(1)) {
+              activePlayer = Player.PLAYER1;
+              frame.showStartingPlayerPopup(throwResults);
+              startingGame = false;
+          }
+          if (throwResults.get(0) < throwResults.get(1)) {
+              activePlayer = Player.PLAYER2;
+              frame.showStartingPlayerPopup(throwResults);
+              startingGame = false;
+          } else {
+              throwResults = dice.throwDice();
+          }
+      }
     }
 
     private void changeActivePlayer() {
