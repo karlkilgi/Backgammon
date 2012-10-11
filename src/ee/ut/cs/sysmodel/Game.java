@@ -98,7 +98,7 @@ public class Game {
             if (checkerToBar) {
                 sendCheckerToBar();
             }
-            getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
+            setDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
             movesLeft = diceMovesLeft.isEmpty();
             if (!movesLeft) {
                 setAvailableMoves(diceMovesLeft);
@@ -273,7 +273,7 @@ public class Game {
         return points;
     }
 
-    private List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
+    private void setDiceMovesLeft(int fromPoint, int toPoint) {
         Integer usedMove;
         if (activePlayer == Player.PLAYER1) {
             usedMove = fromPoint - toPoint;
@@ -281,7 +281,10 @@ public class Game {
             usedMove = toPoint - fromPoint;
         }
         diceMovesLeft.remove(usedMove);
-        return diceMovesLeft;
+    }
+    
+    public List<Integer> getDiceMovesLeft() {
+      return diceMovesLeft;
     }
 
     public boolean isHomeGame(List<Point> populatedPoints) {
