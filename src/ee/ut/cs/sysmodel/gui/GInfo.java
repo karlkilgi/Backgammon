@@ -57,7 +57,7 @@ public class GInfo {
 		
 		panel.add(doubleBetButton);
 		
-		newGameButton = new JButton();
+		newGameButton = new JButton("New game");
 		newGameButton.addActionListener(new ActionListener() {
           
           @Override

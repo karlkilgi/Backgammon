@@ -117,7 +117,7 @@ public class Game {
         }
     }
 
-    public List<Integer> onDiceThrow() {
+    public void onDiceThrow() {
         throwResults = dice.throwDice();
         if (activePlayer == Player.NONE) {
             frame.showBeginningPopup();
@@ -140,10 +140,6 @@ public class Game {
         frame.refresh();
         if (availableMoves.isEmpty()) {
             changeActivePlayer();
-            return null;
-        } else {
-            frame.showDiceResultsPopup(throwResults);
-            return throwResults;
         }
     }
 

@@ -40,7 +40,6 @@ public class GFrame {
 		this.game = game;
 		createFrame();
 	}
-	
 
     // Is starting position of a move selected
     public boolean isFromSelected() {
@@ -118,26 +117,60 @@ public class GFrame {
 	public void showChangePlayersPopup() {
 		String message = game.getInActivePlayer().getName()
 				+ ", your turn is over. " + game.getActivePlayer().getName()
-				+ ", throw dice";
-		showPopup(message, "Throw", JOptionPane.INFORMATION_MESSAGE);
+				+ ", it's your move";
+		
+	    Object[] options = {"Throw", "Double bets and throw"};
+	      int answer = JOptionPane.showOptionDialog(frame,
+	          message,
+	          "Doubling the bet",
+	          JOptionPane.DEFAULT_OPTION,
+	          JOptionPane.QUESTION_MESSAGE,
+	          null,
+	          options,
+	          options[0]);
+	      if (answer == 0 || showAcceptDoublingPopup()) {
+	        infoPanel.refresh();
+	        game.onDiceThrow();
+	      }
 	}
 	
 	public void showBeginningPopup() {
 		String message = "Game started. Throw dice to choose starting player";
-		showPopup(message, "Throw", JOptionPane.INFORMATION_MESSAGE);
+		showMessagePopup(message, "Throw", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void showDiceResultsPopup(List<Integer> results) {
 		String message = game.getActivePlayer().getName() + " threw " + getIntegerListAsString(results);
-		showPopup(message, "OK", JOptionPane.INFORMATION_MESSAGE);
+		showMessagePopup(message, "OK", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void showIllegalMovePopUp() {
 		String message = "Illegal move!";
-		showPopup(message, "OK", JOptionPane.WARNING_MESSAGE);
+		showMessagePopup(message, "OK", JOptionPane.WARNING_MESSAGE);
 	}
 	
-	private void showPopup(String message, String buttonText, int messageType) {
+	private boolean showAcceptDoublingPopup() {
+	  String message = game.getInActivePlayer().getName() + ", do you accept doubling the bet?";
+	  Object[] options = {"Yes", "No, I'll resign"};
+      int answer = JOptionPane.showOptionDialog(frame,
+          message,
+          "Doubling the bet",
+          JOptionPane.YES_NO_OPTION,
+          JOptionPane.QUESTION_MESSAGE,
+          null,
+          options,
+          options[0]);
+      if (answer == 0) {
+        game.increaseBet();
+        infoPanel.refresh();
+        return true;
+      } else {
+        game.onWin(game.getActivePlayer());
+        return false;
+      }
+	}
+	
+	private void showMessagePopup(String message, String buttonText, int messageType) {
 	  Object[] options = {buttonText};
 	     JOptionPane.showOptionDialog(frame,
 	            message,
@@ -159,9 +192,8 @@ public class GFrame {
 	        frame = new JFrame("Backgammon");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        frame.setBounds(100, 100, 600, 400);
-	        frame.setResizable(false);
 	        frame.setLayout(new GridBagLayout());
-	        frame.setResizable(true);
+	        frame.setResizable(false);
 	        
 	        GridBagConstraints c = new GridBagConstraints();
 	        c.ipady = 20;
