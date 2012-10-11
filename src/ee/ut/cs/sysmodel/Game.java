@@ -173,8 +173,14 @@ public class Game {
                     int explodedHomePoint = Integer.MAX_VALUE;
                     if (activePlayer == Player.PLAYER1) {
                         toPoint = fromPoint - throwResult.get(i);
+                        if(toPoint < Player.PLAYER1.getHomePoint())            {
+                            toPoint = Player.PLAYER1.getHomePoint();
+                        }
                     } else {
                         toPoint = fromPoint + throwResult.get(i);
+                        if(toPoint > Player.PLAYER2.getHomePoint())            {
+                            toPoint = Player.PLAYER2.getHomePoint();
+                        }
                     }
                     //Detecting if player can put the checker to home
                     if (homeGame) {
