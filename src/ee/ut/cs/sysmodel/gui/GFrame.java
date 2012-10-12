@@ -130,7 +130,6 @@ public class GFrame {
 				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		if (answer == 0 || showAcceptDoublingPopup()) {
 			infoPanel.refresh();
-			game.onDiceThrow();
 		}
 	}
 
@@ -165,6 +164,24 @@ public class GFrame {
 			game.onWin(game.getActivePlayer());
 			return false;
 		}
+	  String message = game.getInActivePlayer().getName() + ", do you accept doubling the bet?";
+	  Object[] options = {"Yes", "No, I'll resign"};
+      int answer = JOptionPane.showOptionDialog(frame,
+          message,
+          "Doubling the bet",
+          JOptionPane.YES_NO_OPTION,
+          JOptionPane.QUESTION_MESSAGE,
+          null,
+          options,
+          options[0]);
+      if (answer == 0) {
+        game.increaseBet();
+        infoPanel.refresh();
+        return true;
+      } else {
+        game.onWin();
+        return false;
+      }
 	}
 
 	private void showMessagePopup(String message, String buttonText,
@@ -324,4 +341,5 @@ public class GFrame {
 		return str;
 	}
 
+}
 }
