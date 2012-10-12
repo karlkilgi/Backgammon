@@ -171,7 +171,7 @@ public class GFrame {
         infoPanel.refresh();
         return true;
       } else {
-        game.onWin(game.getActivePlayer());
+        game.onWin();
         return false;
       }
 	}
