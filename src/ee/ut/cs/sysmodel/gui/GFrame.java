@@ -97,7 +97,7 @@ public class GFrame {
 
 	public void onNewgame() {
 		String message = "Are you sure you want to cancel the game and start a new one?";
-		Object[] options = { "yea wadeva", "naw bro" };
+		Object[] options = { "Yes!", "Nope" };
 		int answer = JOptionPane.showOptionDialog(frame, message,
 				"Start a new game", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -123,14 +123,25 @@ public class GFrame {
 		String message = game.getInActivePlayer().getName()
 				+ ", your turn is over. " + game.getActivePlayer().getName()
 				+ ", it's your move";
-
+		if (game.getBetSize() > 32) {
+			showChangePlayersPopupWithoutDoubling(message);
+			return;
+		}
 		Object[] options = { "Throw", "Double bets and throw" };
 		int answer = JOptionPane.showOptionDialog(frame, message,
-				"Doubling the bet", JOptionPane.DEFAULT_OPTION,
+				"Changing player", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		if (answer == 0 || showAcceptDoublingPopup()) {
 			infoPanel.refresh();
 		}
+	}
+
+	private void showChangePlayersPopupWithoutDoubling(String message) {
+		Object[] options = { "Throw" };
+		JOptionPane.showOptionDialog(frame, message, "Changing player",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.OK_OPTION, null,
+				options, options[0]);
+
 	}
 
 	public void showBeginningPopup() {
@@ -161,27 +172,15 @@ public class GFrame {
 			infoPanel.refresh();
 			return true;
 		} else {
-			game.onWin(game.getActivePlayer());
+			game.onWin();
 			return false;
 		}
-	  String message = game.getInActivePlayer().getName() + ", do you accept doubling the bet?";
-	  Object[] options = {"Yes", "No, I'll resign"};
-      int answer = JOptionPane.showOptionDialog(frame,
-          message,
-          "Doubling the bet",
-          JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE,
-          null,
-          options,
-          options[0]);
-      if (answer == 0) {
-        game.increaseBet();
-        infoPanel.refresh();
-        return true;
-      } else {
-        game.onWin();
-        return false;
-      }
+	}
+
+	public void showWinPopup() {
+		String message = game.getActivePlayer().getName()
+				+ " won with a score of " + game.getBetSize();
+		showMessagePopup(message, "OK", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void showMessagePopup(String message, String buttonText,
@@ -341,5 +340,4 @@ public class GFrame {
 		return str;
 	}
 
-}
 }
