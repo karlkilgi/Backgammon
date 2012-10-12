@@ -20,7 +20,7 @@ public enum Player {
     Player() {
         this.color = null;
         this.homePoint = -1;
-        this.name = null;
+        this.name = "NONE";
     }
 
     Player(Color color, int homePoint, Bar bar, String name) {

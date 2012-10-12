@@ -5,7 +5,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import ee.ut.cs.sysmodel.Player;
@@ -18,25 +17,6 @@ public class GPoint extends GWidget {
 	public GPoint(GFrame frame, Point point) {
 		this.frame = frame;
 		this.point = point;
-	}
-
-	@Override
-	public void setPanel(final JPanel panel) {
-		this.panel = panel;
-		panel.setBackground(getBackgroundColor());
-		final GPoint gPoint = this;
-		panel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (!frame.isFromSelected() && getNumberOfCheckers() < 1) {
-					return;
-				}
-				panel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,2));
-				frame.onWidgetClick(gPoint);
-			}
-		});
-		panel.setLayout(getLayout());
-		panel.setVisible(true);
 	}
 	
 	@Override
@@ -67,6 +47,23 @@ public class GPoint extends GWidget {
 	@Override
 	public Border getBorder() {
 		return BorderFactory.createEmptyBorder();
+	}
+
+	@Override
+	public MouseAdapter getMouseAdapter() {
+		final GPoint gPoint = this;
+		return new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			    // If player tries to start a move from an empty point do nothing
+				if (!frame.isFromSelected() && getNumberOfCheckers() < 1) {
+					return;
+				}
+				// Highlight the point
+				panel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,2));
+				frame.onWidgetClick(gPoint);
+			}
+		};
 	}
 	
 }

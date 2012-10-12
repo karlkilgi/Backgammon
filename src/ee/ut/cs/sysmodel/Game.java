@@ -65,48 +65,28 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game game = new Game();
+        new Game();
     }
 
-    public void onBetIncrease() {
-        betSize = betSize * 2;
+    public void increaseBet() {
+        if (betSize < 64) {
+            betSize = betSize * 2;
+        }
     }
 
-    public void sendCheckerToBar() {
+    private void sendCheckerToBar() {
         if (activePlayer == Player.PLAYER1) {
             Player.PLAYER2.getBar().addChecker();
         } else {
             Player.PLAYER1.getBar().addChecker();
         }
+        frame.refresh();
     }
 
     public void onMove(int fromPoint, int toPoint) {
+        System.out.println(getActivePlayer().getName() + " made move " + fromPoint + "->" + toPoint);
         boolean movesLeft;
         Move playerMove = new Move(fromPoint, toPoint);
-//        for (Move move : availableMoves) {
-//            if (move.equals(playerMove)) {
-//                if (activePlayer.getBar().isEmpty()) {
-//                    points[playerMove.getFromPoint()].removeChecker();
-//                } else {
-//                    activePlayer.getBar().removeChecker();
-//                }
-//                boolean checkerToBar = points[playerMove.getToPoint()].addChecker(activePlayer);
-//                if (checkerToBar) {
-//                    sendCheckerToBar();
-//                }
-//                getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
-//                movesLeft = diceMovesLeft.isEmpty();
-//                if (!movesLeft) {
-//                    setAvailableMoves(diceMovesLeft);
-//                } else {
-//                    changeActivePlayer();
-//                }
-//                if (availableMoves.isEmpty()) {
-//                    changeActivePlayer();
-//                }
-//            }
-//        }
-
         if (availableMoves.contains(playerMove)) {
             if (activePlayer.getBar().isEmpty()) {
                 points[playerMove.getFromPoint()].removeChecker();
@@ -117,65 +97,74 @@ public class Game {
             if (checkerToBar) {
                 sendCheckerToBar();
             }
-            getDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
+            setDiceMovesLeft(playerMove.getFromPoint(), playerMove.getToPoint());
             movesLeft = diceMovesLeft.isEmpty();
             if (!movesLeft) {
                 setAvailableMoves(diceMovesLeft);
+                frame.refresh();
             } else {
+                frame.refresh();
                 changeActivePlayer();
             }
             if (availableMoves.isEmpty()) {
+                frame.refresh();
                 changeActivePlayer();
             }
         } else {
             frame.showIllegalMovePopUp();
         }
-        frame.refresh();
     }
 
-    public List<Integer> onDiceThrow() {
+    private void onDiceThrow() {
         throwResults = dice.throwDice();
         if (activePlayer == Player.NONE) {
-            frame.showBeginningPopup();
-            boolean startingGame = true;
-            while (startingGame) {
-                if (throwResults.get(0) > throwResults.get(1)) {
-                    activePlayer = Player.PLAYER1;
-                    startingGame = false;
-                }
-                if (throwResults.get(0) < throwResults.get(1)) {
-                    activePlayer = Player.PLAYER2;
-                    startingGame = false;
-                } else {
-                    throwResults = dice.throwDice();
-                }
-            }
+            setStartingPlayer();
         }
         diceMovesLeft = throwResults;
         setAvailableMoves(throwResults);
+        frame.refresh();
         if (availableMoves.isEmpty()) {
             changeActivePlayer();
-            return null;
-        } else {
-            frame.showDiceResults(throwResults);
-            return throwResults;
+        }
+    }
+
+    private void setStartingPlayer() {
+        frame.showBeginningPopup();
+        boolean startingGame = true;
+        while (startingGame) {
+            if (throwResults.get(0) > throwResults.get(1)) {
+                activePlayer = Player.PLAYER1;
+                frame.showStartingPlayerPopup(throwResults);
+                startingGame = false;
+            }
+            if (throwResults.get(0) < throwResults.get(1)) {
+                activePlayer = Player.PLAYER2;
+                frame.showStartingPlayerPopup(throwResults);
+                startingGame = false;
+            } else {
+                throwResults = dice.throwDice();
+            }
         }
     }
 
     private void changeActivePlayer() {
-        //TODO set text about no moves left, changing player
         if (activePlayer == Player.PLAYER1) {
             setActivePlayer(Player.PLAYER2);
         } else {
             setActivePlayer(Player.PLAYER1);
         }
         frame.showChangePlayersPopup();
+        onDiceThrow();
     }
 
-    public void setAvailableMoves(List<Integer> throwResult) {
+    private void setAvailableMoves(List<Integer> throwResult) {
         availableMoves.clear();
         int toPoint;
-        boolean homeGame = true;
+        boolean homeGame;
+        if (isPlayerWon()) {
+            onWin();
+            return;
+        }
         if (throwResult.isEmpty()) {
             return;
         }
@@ -185,41 +174,55 @@ public class Game {
             List<Point> populatedPoints = getActivePlayerPopulatedPoints();
             homeGame = isHomeGame(populatedPoints);
             for (Point populatedPoint : populatedPoints) {
-                for (int i = 0; i <= 1; i++) {
-                    int fromPoint = populatedPoint.getPosition();
-                    int explodedHomePoint = Integer.MAX_VALUE;
-                    if (activePlayer == Player.PLAYER1) {
-                        toPoint = fromPoint - throwResult.get(i);
-                    } else {
-                        toPoint = fromPoint + throwResult.get(i);
-                    }
-                    //Detecting if player can put the checker to home
-                    if (homeGame) {
-                        if (toPoint < activePlayer.getHomePoint()) {
-                            explodedHomePoint = toPoint;
-                            toPoint = activePlayer.getHomePoint();
+                if (populatedPoint.getPosition() != activePlayer.getHomePoint()) {
+                    for (int i = 0; i <= 1; i++) {
+                        int fromPoint = populatedPoint.getPosition();
+                        int explodedHomePoint = Integer.MAX_VALUE;
+                        if (activePlayer == Player.PLAYER1) {
+                            toPoint = fromPoint - throwResult.get(i);
+                            if (toPoint <= activePlayer.getHomePoint()) {
+                                explodedHomePoint = toPoint;
+                                toPoint = activePlayer.getHomePoint();
+                            }
+                        } else {
+                            toPoint = fromPoint + throwResult.get(i);
+                            if (toPoint >= activePlayer.getHomePoint()) {
+                                explodedHomePoint = toPoint;
+                                toPoint = activePlayer.getHomePoint();
+                            }
                         }
-                        if (toPoint > activePlayer.getHomePoint()) {
-                            explodedHomePoint = toPoint;
-                            toPoint = activePlayer.getHomePoint();
+                        if (points[toPoint].canAdd(activePlayer)) {
+                            boolean explodedHomeMove = isExplodedHomeMoveAllowed(homeGame, fromPoint, toPoint, explodedHomePoint, populatedPoints, populatedPoint);
+                            if (explodedHomeMove) {
+                                availableMoves.add(new Move(fromPoint, toPoint));
+                            }
+                            if (toPoint != activePlayer.getHomePoint()) {
+                                availableMoves.add(new Move(fromPoint, toPoint));
+                            }
                         }
-                    }
-                    if (points[toPoint].canAdd(activePlayer)) {
-                        boolean explodedHomeMove = isExplodedHomeMoveAllowed(homeGame, fromPoint, toPoint, explodedHomePoint, populatedPoints, populatedPoint);
-                        if (explodedHomeMove) {
-                            availableMoves.add(new Move(fromPoint, toPoint));
+                        //No need to populate list with same moves
+                        if (i == 0) {
+                            if (throwResult.size() == 2)
+                                if (throwResult.get(i).equals(throwResult.get(i + 1))) {
+                                    break;
+                                }
                         }
-                        if (toPoint != activePlayer.getHomePoint()) {
-                            availableMoves.add(new Move(fromPoint, toPoint));
+                        if (throwResult.size() > 2 || throwResult.size() == 1) {
+                            break;
                         }
-                    }
-                    //No need to populate list with same moves
-                    if (throwResult.size() > 2 || throwResult.size() == 1) {
-                        break;
                     }
                 }
             }
         }
+        System.out.println("Available moves " + getAvailableMovesToString());
+    }
+
+    private String getAvailableMovesToString() {
+        String moves = "";
+        for (Move a : availableMoves) {
+            moves += a.getFromPoint() + ">" + a.getToPoint() + " ";
+        }
+        return moves;
     }
 
     private void setAvailableMovesOutOfBar(List<Integer> throwResult) {
@@ -242,7 +245,7 @@ public class Game {
         }
     }
 
-    public List<Point> getActivePlayerPopulatedPoints() {
+    private List<Point> getActivePlayerPopulatedPoints() {
         List<Point> populatedPoints = new LinkedList<Point>();
         for (int i = 0; i <= 25; i++) {
             if (points[i].getPlayer() == activePlayer) {
@@ -263,7 +266,7 @@ public class Game {
         return activePlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
     }
 
-    public void setActivePlayer(Player activePlayer) {
+    private void setActivePlayer(Player activePlayer) {
         this.activePlayer = activePlayer;
     }
 
@@ -275,18 +278,32 @@ public class Game {
         return points;
     }
 
-    public List<Integer> getDiceMovesLeft(int fromPoint, int toPoint) {
+    private void setDiceMovesLeft(int fromPoint, int toPoint) {
         Integer usedMove;
+        int smallestPossibleMove = Integer.MAX_VALUE;
         if (activePlayer == Player.PLAYER1) {
             usedMove = fromPoint - toPoint;
         } else {
             usedMove = toPoint - fromPoint;
         }
+        //for exploded moves
+        if (activePlayer.getHomePoint() == toPoint) {
+            for (Integer diceMove : diceMovesLeft) {
+                if (diceMove >= usedMove && diceMove < smallestPossibleMove) {
+                    smallestPossibleMove = diceMove;
+                }
+            }
+            usedMove = smallestPossibleMove;
+        }
+
         diceMovesLeft.remove(usedMove);
+    }
+
+    public List<Integer> getDiceMovesLeft() {
         return diceMovesLeft;
     }
 
-    public boolean isHomeGame(List<Point> populatedPoints) {
+    private boolean isHomeGame(List<Point> populatedPoints) {
         boolean homeGame = true;
         for (Point populatedPoint : populatedPoints) {
             if (activePlayer == Player.PLAYER1) {
@@ -307,25 +324,60 @@ public class Game {
         return homeGame;
     }
 
-    public boolean isExplodedHomeMoveAllowed(boolean homeGame, int fromPoint, int toPoint, int explodedHomePoint, List<Point> populatedPoints, Point populatedPoint) {
-        boolean explodedHomeMove = true;
-        if (homeGame && toPoint == activePlayer.getHomePoint()) {
-            if (explodedHomePoint == activePlayer.getHomePoint()) {
-                availableMoves.add(new Move(fromPoint, toPoint));
-            } else {
-                for (Point populatedPointOnBoard : populatedPoints) {
+    private boolean isExplodedHomeMoveAllowed(boolean homeGame, int fromPoint, int toPoint, int explodedHomePoint, List<Point> populatedPoints, Point populatedPointToMove) {
+        boolean explodedHomeMove = false;
+        if (explodedHomePoint != Integer.MAX_VALUE) {
+            if (homeGame && toPoint == activePlayer.getHomePoint()) {
+                if (explodedHomePoint == activePlayer.getHomePoint()) {
+                    availableMoves.add(new Move(fromPoint, toPoint));
+                } else {
+                    Point furthestPointFromHome = populatedPointToMove;
+                    for (Point populatedPointOnBoard : populatedPoints) {
+                        if (activePlayer == Player.PLAYER1) {
+                            if (populatedPointToMove.getPosition() < populatedPointOnBoard.getPosition() && explodedHomePoint < activePlayer.getHomePoint()) {
+                                furthestPointFromHome = populatedPointOnBoard;
+                            }
+                        } else {
+                            if (populatedPointToMove.getPosition() > populatedPointOnBoard.getPosition() && explodedHomePoint > activePlayer.getHomePoint()) {
+                                furthestPointFromHome = populatedPointOnBoard;
+                            }
+                        }
+                    }
                     if (activePlayer == Player.PLAYER1) {
-                        if (populatedPoint.getPosition() < populatedPointOnBoard.getPosition() && explodedHomePoint < activePlayer.getHomePoint()) {
-                            explodedHomeMove = false;
+                        if (populatedPointToMove.getPosition() >= furthestPointFromHome.getPosition()) {
+                            explodedHomeMove = true;
                         }
                     } else {
-                        if (populatedPoint.getPosition() > populatedPointOnBoard.getPosition() && explodedHomePoint > activePlayer.getHomePoint()) {
-                            explodedHomeMove = false;
+                        if (populatedPointToMove.getPosition() <= furthestPointFromHome.getPosition()) {
+                            explodedHomeMove = true;
                         }
                     }
                 }
+
             }
         }
         return explodedHomeMove;
+    }
+
+    private boolean isPlayerWon() {
+        return points[activePlayer.getHomePoint()].getNumberOfCheckers() == 15;
+    }
+
+    public void onWin() {
+        System.out.println("Game over, player: " + activePlayer + " won");
+    }
+
+    public void startNewGame() {
+        cleanAll();
+        initializeCheckers();
+        onDiceThrow();
+    }
+
+    private void cleanAll() {
+        for (int i = 0; i <= 25; i++) {
+            points[13].setNumberOfCheckers(0);
+            points[13].setPlayer(Player.NONE);
+        }
+        activePlayer = Player.NONE;
     }
 }

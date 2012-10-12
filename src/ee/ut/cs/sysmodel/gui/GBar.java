@@ -5,8 +5,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import ee.ut.cs.sysmodel.Player;
@@ -18,24 +16,6 @@ public class GBar extends GWidget {
 	public GBar(GFrame frame, Player player) {
 		this.frame = frame;
 		this.player = player;
-	}
-
-	@Override
-	public void setPanel(final JPanel panel) {
-		this.panel = panel;
-		panel.setBackground(getBackgroundColor());
-		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		final GBar gBar = this;
-		panel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (!frame.isFromSelected() && getNumberOfCheckers() > 0) {
-					return;
-				}
-				frame.onWidgetClick(gBar);
-				panel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,2));
-			}
-		});
 	}
 	
 	@Override
@@ -65,7 +45,25 @@ public class GBar extends GWidget {
 
 	@Override
 	public Border getBorder() {
-		return BorderFactory.createBevelBorder(BevelBorder.RAISED);
+		return BorderFactory.createLineBorder(Color.BLACK);
+	}
+
+	@Override
+	public MouseAdapter getMouseAdapter() {
+		final GBar gBar = this;
+		return new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			    // If player tries to move a checker ON the bar
+			    // or tries to move a checker from an empty bar
+			    // then do nothing
+				if (frame.isFromSelected() || getNumberOfCheckers() < 1) {
+					return;
+				}
+				panel.setBorder(BorderFactory.createLineBorder(Color.YELLOW,2));
+				frame.onWidgetClick(gBar);
+			}
+		};
 	}
 	
 }
