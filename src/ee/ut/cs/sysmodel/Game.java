@@ -241,6 +241,15 @@ public class Game {
                     availableMoves.add(new Move(fromPoint, toPoint));
                 }
             }
+            if (i == 0) {
+                if (throwResult.size() == 2)
+                    if (throwResult.get(i).equals(throwResult.get(i + 1))) {
+                        break;
+                    }
+            }
+            if (throwResult.size() > 2 || throwResult.size() == 1) {
+                break;
+            }
         }
     }
 
