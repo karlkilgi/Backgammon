@@ -11,8 +11,6 @@ import java.util.List;
  * Time: 10:10 PM
  */
 
-// TODO - lisada selline loogika, et saaks uut mängu alustada (nt pärast käesoleva katkestamist või läbisaamist)
-
 public class Game {
 
     private int betSize = 1;
@@ -67,7 +65,7 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game game = new Game();
+        new Game();
     }
 
     public void increaseBet() {
@@ -163,8 +161,8 @@ public class Game {
         availableMoves.clear();
         int toPoint;
         boolean homeGame;
-        if (isPlayerWon(activePlayer)) {
-            onWin(activePlayer);
+        if (isPlayerWon()) {
+            onWin();
             return;
         }
         if (throwResult.isEmpty()) {
@@ -361,11 +359,11 @@ public class Game {
         return explodedHomeMove;
     }
 
-    private boolean isPlayerWon(Player player) {
+    private boolean isPlayerWon() {
         return points[activePlayer.getHomePoint()].getNumberOfCheckers() == 15;
     }
 
-    public void onWin(Player player) {
+    public void onWin() {
         System.out.println("Game over, player: " + activePlayer + " won");
     }
 
