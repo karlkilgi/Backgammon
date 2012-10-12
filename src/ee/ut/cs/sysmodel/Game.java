@@ -165,6 +165,7 @@ public class Game {
         boolean homeGame;
         if (isPlayerWon(activePlayer)) {
             onWin(activePlayer);
+            return;
         }
         if (throwResult.isEmpty()) {
             return;
@@ -361,15 +362,24 @@ public class Game {
     }
 
     private boolean isPlayerWon(Player player) {
-        return points[activePlayer.getHomePoint()].getNumberOfCheckers() == 5;
+        return points[activePlayer.getHomePoint()].getNumberOfCheckers() == 15;
     }
 
     public void onWin(Player player) {
         System.out.println("Game over, player: " + activePlayer + " won");
-
     }
 
     public void startNewGame() {
+        cleanAll();
+        initializeCheckers();
+        onDiceThrow();
+    }
 
+    private void cleanAll() {
+        for (int i = 0; i <= 25; i++) {
+            points[13].setNumberOfCheckers(0);
+            points[13].setPlayer(Player.NONE);
+        }
+        activePlayer = Player.NONE;
     }
 }
