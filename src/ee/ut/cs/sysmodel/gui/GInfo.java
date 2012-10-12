@@ -1,25 +1,18 @@
 package ee.ut.cs.sysmodel.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import ee.ut.cs.sysmodel.Game;
-
 public class GInfo {
 
 	private GFrame frame;
-	private JPanel panel;
 	private JLabel diceLabel;
 	private JLabel activePlayerLabel;
 	private JLabel betLabel;
@@ -30,7 +23,6 @@ public class GInfo {
 	}
 	
 	public void setPanel(JPanel panel) {
-		this.panel = panel;
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
