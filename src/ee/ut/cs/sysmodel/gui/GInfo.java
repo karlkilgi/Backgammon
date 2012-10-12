@@ -23,7 +23,6 @@ public class GInfo {
 	private JLabel diceLabel;
 	private JLabel activePlayerLabel;
 	private JLabel betLabel;
-	private JButton doubleBetButton;
 	private JButton newGameButton;
 	
 	public GInfo(GFrame frame) {
@@ -45,18 +44,7 @@ public class GInfo {
 		panel.add(activePlayerLabel);
 		panel.add(diceLabel);
 		panel.add(betLabel);
-		
-		doubleBetButton = new JButton("Double bet");
-		doubleBetButton.addActionListener(new ActionListener() {
-          
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            frame.onDoubleBet();
-          }
-        });
-		
-		panel.add(doubleBetButton);
-		
+
 		newGameButton = new JButton("New game");
 		newGameButton.addActionListener(new ActionListener() {
           
