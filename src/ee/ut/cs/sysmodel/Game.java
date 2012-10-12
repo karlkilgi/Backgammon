@@ -130,17 +130,16 @@ public class Game {
 
     private void setStartingPlayer() {
         frame.showBeginningPopup();
-        boolean startingGame = true;
-        while (startingGame) {
+        while (true) {
             if (throwResults.get(0) > throwResults.get(1)) {
                 activePlayer = Player.PLAYER1;
                 frame.showStartingPlayerPopup(throwResults);
-                startingGame = false;
+                break;
             }
             if (throwResults.get(0) < throwResults.get(1)) {
                 activePlayer = Player.PLAYER2;
                 frame.showStartingPlayerPopup(throwResults);
-                startingGame = false;
+                break;
             } else {
                 throwResults = dice.throwDice();
             }
