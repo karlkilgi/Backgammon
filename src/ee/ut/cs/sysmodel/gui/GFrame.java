@@ -95,7 +95,10 @@ public class GFrame {
 		infoPanel.refresh();
 	}
 
-	public void onNewgame() {
+	// EVENT HANDLERS end here
+
+	// POP UPS start here
+	public void showNewGamePopup() {
 		String message = "Are you sure you want to cancel the game and start a new one?";
 		Object[] options = { "Yes!", "Nope" };
 		int answer = JOptionPane.showOptionDialog(frame, message,
@@ -105,10 +108,6 @@ public class GFrame {
 			game.startNewGame();
 		}
 	}
-
-	// EVENT HANDLERS end here
-
-	// POP UPS start here
 
 	public void showStartingPlayerPopup(List<Integer> throwresults) {
 		String message = Player.PLAYER1.getName() + " threw "
@@ -198,7 +197,7 @@ public class GFrame {
 	private void createFrame() {
 		frame = new JFrame("Backgammon");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 600, 400);
+		frame.setBounds(100, 100, 600, 410);
 		frame.setLayout(new GridBagLayout());
 		frame.setResizable(false);
 
@@ -323,11 +322,7 @@ public class GFrame {
 		return Integer.toString(game.getBetSize());
 	}
 
-	public String getAdditionalInfo() {
-		return "TODO";
-	}
-
-	// GETTERS FOR INFO PANEL start here
+	// GETTERS FOR INFO PANEL end here
 
 	private String getIntegerListAsString(List<Integer> list) {
 		if (list == null || list.isEmpty()) {

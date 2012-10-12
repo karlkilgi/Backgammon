@@ -9,12 +9,17 @@ package ee.ut.cs.sysmodel;
 public class Point {
     private Player player;
     private int position;
-
+    private int numberOfCheckers;
+    
+    public Point(int position) {
+        this.position = position;
+        this.numberOfCheckers = 0;
+        this.player = Player.NONE;
+    }
+    
     public int getNumberOfCheckers() {
         return numberOfCheckers;
     }
-
-    private int numberOfCheckers;
 
     public Player getPlayer() {
         return player;
@@ -26,12 +31,6 @@ public class Point {
 
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    Point(int position) {
-        this.position = position;
-        numberOfCheckers = 0;
-        player = Player.NONE;
     }
 
     public boolean canAdd(Player player) {

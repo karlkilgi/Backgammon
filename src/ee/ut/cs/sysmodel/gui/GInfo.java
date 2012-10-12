@@ -42,7 +42,7 @@ public class GInfo {
           
           @Override
           public void actionPerformed(ActionEvent e) {
-            frame.onNewgame();
+            frame.showNewGamePopup();
           }
         });
 		

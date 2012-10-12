@@ -9,7 +9,7 @@ package ee.ut.cs.sysmodel;
 public class Bar {
     private int numberOfCheckers;
 
-    Bar() {
+    public Bar() {
         this.numberOfCheckers = 0;
     }
 

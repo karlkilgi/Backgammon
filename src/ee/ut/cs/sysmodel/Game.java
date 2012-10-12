@@ -20,14 +20,17 @@ public class Game {
 	private List<Integer> diceMovesLeft;
 	private GFrame frame;
 
-	Game() {
+	public static void main(String[] args) {
+		new Game();
+	}
+	
+	public Game() {
 		initializeGame();
 		frame = new GFrame(this);
 		onDiceThrow();
 	}
 
 	private void initializeGame() {
-
 		for (int i = 0; i <= 25; i++) {
 			points[i] = new Point(i);
 		}
@@ -62,9 +65,6 @@ public class Game {
 		points[19].setPlayer(Player.PLAYER2);
 	}
 
-	public static void main(String[] args) {
-		new Game();
-	}
 
 	public void increaseBet() {
 		if (betSize < 64) {
@@ -390,8 +390,8 @@ public class Game {
 
 	private void cleanAll() {
 		for (int i = 0; i <= 25; i++) {
-			points[13].setNumberOfCheckers(0);
-			points[13].setPlayer(Player.NONE);
+			points[i].setNumberOfCheckers(0);
+			points[i].setPlayer(Player.NONE);
 		}
 		activePlayer = Player.NONE;
 	}
