@@ -137,7 +137,6 @@ public class GFrame {
 	          options[0]);
 	      if (answer == 0 || showAcceptDoublingPopup()) {
 	        infoPanel.refresh();
-	        game.onDiceThrow();
 	      }
 	}
 	
